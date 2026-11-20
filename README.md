@@ -1,36 +1,19 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SideQuest Studio — site
 
-## Getting Started
+Site institucional da SideQuest Studio (Leo & Raduchiu), em Next.js 16 (App Router).
 
-First, run the development server:
+## Rodar
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Onde mexer
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `lib/site.ts` — e-mail de contato e GitHub (troque pelo e-mail real antes de publicar).
+- `lib/apps.ts` — textos, funcionalidades e tecnologias dos apps da vitrine.
+- `components/PhoneMocks.tsx` — as telas ilustradas do MyPetMatch e do Level Fit.
+- `app/globals.css` — tokens da identidade visual (Verde Leo, Roxo Raduchiu, Tinta, Pergaminho, Ouro XP).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Páginas: `/` (início) e `/apps/mypetmatch`, `/apps/levelfit` (cases).
