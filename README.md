@@ -17,3 +17,7 @@ npm run dev
 - `app/globals.css` — tokens da identidade visual (Verde Leo, Roxo Raduchiu, Tinta, Pergaminho, Ouro XP).
 
 Páginas: `/` (início) e `/apps/mypetmatch`, `/apps/levelfit` (cases).
+
+## Identidade visual
+
+`brand/identidade-visual.html` é o manual de marca (abra no navegador) e `brand/logo/` tem os SVGs do símbolo `<!>`.

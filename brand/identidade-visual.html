@@ -1,0 +1,695 @@
+<title>SideQuest Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&text=%E3%82%B5%E3%82%A4%E3%83%89%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E3%83%BB%E3%82%BF%E3%82%B8%E3%82%AA&display=swap">
+<style>
+/* Layout: manual de marca como um "quest log" — palco escuro com grade de mapa no topo, seções com rótulos em comentário de código, verde e roxo sempre lado a lado, nunca misturados. */
+:root {
+  /* marca (fixas nos dois temas) */
+  --leo: #1FCB7E;        /* Verde Leo */
+  --leo-deep: #0E9A5C;
+  --radu: #7A3CF0;       /* Roxo Raduchiu */
+  --radu-soft: #A984FF;
+  --xp: #FFC94A;         /* Ouro XP — uso pontual */
+  --ink: #14111C;        /* Tinta */
+  --paper: #F7F6FB;      /* Pergaminho */
+  --danger: #E5484D;
+
+  /* tema claro */
+  --bg: #F7F6FB;
+  --fg: #14111C;
+  --surface: #FFFFFF;
+  --line: #E2DEEC;
+  --muted: #5F5973;
+  --radu-text: #6A2EE0;
+  --leo-text: #0B8A51;
+  --dots: rgba(122, 60, 240, .16);
+
+  --f-display: "Chakra Petch", "Rajdhani", system-ui, sans-serif;
+  --f-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-jp: "Dela Gothic One", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #110E18; --fg: #F1EFF7; --surface: #1B1726; --line: #2E2942; --muted: #A49EB8;
+    --radu-text: #B596FF; --leo-text: #3FE098; --dots: rgba(169, 132, 255, .18);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #110E18; --fg: #F1EFF7; --surface: #1B1726; --line: #2E2942; --muted: #A49EB8;
+  --radu-text: #B596FF; --leo-text: #3FE098; --dots: rgba(169, 132, 255, .18);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 16px; line-height: 1.6; }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+h2 { font-size: clamp(1.9rem, 4.5vw, 2.9rem); font-weight: 700; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+p { margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.label { font-family: var(--f-mono); font-size: .78rem; letter-spacing: .06em; color: var(--muted); }
+.label b { color: var(--leo-text); font-weight: 500; }
+.lede { max-width: 62ch; color: var(--muted); font-size: 1.06rem; }
+section { padding-block: clamp(56px, 8vw, 96px); border-top: 1px solid var(--line); }
+.sec-head { display: grid; gap: 14px; margin-bottom: 40px; }
+.grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 24px; min-width: 0; }
+.mark { display: block; }
+:focus-visible { outline: 2px solid var(--radu-soft); outline-offset: 3px; }
+
+/* ---------- HERO ---------- */
+.hero {
+  background-color: var(--ink); color: var(--paper);
+  background-image: radial-gradient(rgba(169,132,255,.22) 1.2px, transparent 1.3px);
+  background-size: 22px 22px;
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+  padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
+  padding-bottom: 64px;
+  position: relative; overflow: hidden;
+}
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--f-mono); font-size: .75rem; letter-spacing: .08em; color: #A49EB8; }
+.topbar .who { display: flex; align-items: center; gap: 10px; color: var(--paper); }
+.stage { position: relative; margin-top: 56px; padding: clamp(28px, 6vw, 64px); }
+.stage::before, .stage::after, .stage > .c3, .stage > .c4 { content: ""; position: absolute; width: 22px; height: 22px; border-color: var(--leo); border-style: solid; }
+.stage::before { top: 0; left: 0; border-width: 2px 0 0 2px; }
+.stage::after { top: 0; right: 0; border-width: 2px 2px 0 0; border-color: var(--radu-soft); }
+.stage > .c3 { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+.stage > .c4 { bottom: 0; right: 0; border-width: 0 2px 2px 0; border-color: var(--radu-soft); }
+.lockup { display: flex; align-items: center; gap: clamp(16px, 3vw, 32px); flex-wrap: wrap; }
+.lockup .mark { width: clamp(84px, 14vw, 150px); height: auto; flex: none; }
+.wordmark { font-family: var(--f-display); font-weight: 700; font-size: clamp(3rem, 11vw, 7.5rem); line-height: .9; letter-spacing: -.02em; }
+.wordmark .q { color: var(--radu-soft); }
+.studio { font-family: var(--f-mono); font-weight: 500; letter-spacing: .5em; font-size: clamp(.8rem, 1.8vw, 1.1rem); color: var(--leo); margin-top: 10px; padding-left: .2em; }
+.jp { font-family: var(--f-jp); font-size: clamp(1rem, 2.4vw, 1.4rem); color: #A49EB8; margin-top: 36px; letter-spacing: .1em; }
+.tagline { font-family: var(--f-display); font-weight: 500; font-size: clamp(1.2rem, 2.6vw, 1.7rem); margin-top: 8px; max-width: 30ch; }
+.hud { display: flex; gap: 10px 28px; flex-wrap: wrap; margin-top: 36px; font-family: var(--f-mono); font-size: .8rem; color: #A49EB8; }
+.hud span b { color: var(--paper); font-weight: 500; }
+.bang { transform-box: fill-box; animation: bob 2.4s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .bang, .bar i { animation: none !important; } }
+
+/* ---------- ESSÊNCIA ---------- */
+.manifesto { font-family: var(--f-display); font-weight: 600; font-size: clamp(1.6rem, 4vw, 2.6rem); line-height: 1.15; max-width: 22ch; text-wrap: balance; }
+.manifesto em { font-style: normal; color: var(--radu-text); }
+.essence { display: grid; gap: 40px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); align-items: start; }
+.essence .text { display: grid; gap: 16px; color: var(--muted); max-width: 60ch; }
+.questlog { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.quest { display: grid; grid-template-columns: 22px 1fr; gap: 14px; padding: 18px 20px; border-top: 1px solid var(--line); }
+.quest:first-child { border-top: 0; }
+.quest .d { width: 12px; height: 12px; transform: rotate(45deg); margin: 7px 0 0 5px; background: var(--radu); }
+.quest.main .d { background: var(--leo); }
+.quest .t { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .1em; color: var(--muted); }
+.quest p { font-weight: 500; }
+
+/* ---------- PARTY ---------- */
+.party { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.hero-card { border-radius: 6px; padding: 28px; color: var(--ink); position: relative; overflow: hidden; display: grid; gap: 18px; }
+.hero-card.leo { background: var(--leo); }
+.hero-card.radu { background: var(--radu); color: #fff; }
+.hero-card .p1 { font-family: var(--f-mono); font-size: .75rem; letter-spacing: .14em; opacity: .8; }
+.hero-card h3 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; }
+.hero-card .cls { font-family: var(--f-mono); font-size: .85rem; }
+.stats { display: grid; gap: 8px; font-family: var(--f-mono); font-size: .78rem; }
+.stat { display: grid; grid-template-columns: 70px 1fr; align-items: center; gap: 10px; }
+.stat .bar { height: 8px; border-radius: 2px; background: rgba(0,0,0,.18); overflow: hidden; }
+.radu .stat .bar { background: rgba(255,255,255,.22); }
+.stat .bar span { display: block; height: 100%; background: currentColor; }
+.hero-card .big-d { position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; transform: rotate(45deg); border: 18px solid currentColor; opacity: .12; }
+
+/* ---------- LOGO ---------- */
+.anatomy { display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); align-items: center; }
+.anatomy-fig { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 24px; background-image: radial-gradient(var(--dots) 1px, transparent 1.2px); background-size: 16px 16px; }
+.anatomy-fig svg { width: 100%; height: auto; display: block; }
+.legend { display: grid; gap: 18px; }
+.legend div { display: grid; grid-template-columns: 28px 1fr; gap: 14px; }
+.legend .k { font-family: var(--f-mono); font-size: .8rem; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; border: 1.5px solid var(--fg); }
+.legend p { color: var(--muted); }
+.legend strong { color: var(--fg); display: block; }
+.versions { margin-top: 48px; display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+.ver { border-radius: 6px; border: 1px solid var(--line); overflow: hidden; display: grid; grid-template-rows: 180px auto; min-width: 0; }
+.ver .show { display: grid; place-items: center; padding: 20px; }
+.ver .cap { padding: 14px 16px; background: var(--surface); border-top: 1px solid var(--line); display: grid; gap: 2px; }
+.ver .cap b { font-weight: 600; }
+.ver .cap span { font-size: .85rem; color: var(--muted); }
+.on-ink { background: var(--ink); color: var(--paper); }
+.on-paper { background: var(--paper); color: var(--ink); }
+.on-leo { background: var(--leo); color: var(--ink); }
+.on-radu { background: var(--radu); color: #fff; }
+.mini-lock { display: flex; align-items: center; gap: 12px; }
+.mini-lock .mark { width: 52px; height: 52px; }
+.mini-lock .wm { font-family: var(--f-display); font-weight: 700; font-size: 1.9rem; line-height: .9; }
+.mini-lock .st { font-family: var(--f-mono); font-size: .62rem; letter-spacing: .45em; margin-top: 4px; }
+.stack { display: grid; justify-items: center; gap: 8px; text-align: center; }
+.stack .mark { width: 60px; height: 60px; }
+.stack .wm { font-family: var(--f-display); font-weight: 700; font-size: 1.6rem; line-height: .9; }
+.stack .st { font-family: var(--f-mono); font-size: .6rem; letter-spacing: .45em; padding-left: .45em; }
+
+.rules { margin-top: 48px; display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.clear { display: grid; place-items: center; padding: 28px; }
+.clear .box { position: relative; padding: 28px; border: 1.5px dashed var(--radu-text); }
+.clear .box .mark { width: 84px; height: 84px; }
+.clear .box i { position: absolute; font-family: var(--f-mono); font-style: normal; font-size: .7rem; color: var(--radu-text); }
+.minsize { display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; padding: 12px 0 4px; }
+.minsize figure { margin: 0; display: grid; gap: 8px; justify-items: start; }
+.minsize figcaption { font-family: var(--f-mono); font-size: .72rem; color: var(--muted); }
+
+.donts { margin-top: 20px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+.dont { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.dont .show { height: 130px; display: grid; place-items: center; position: relative; }
+.dont .show .mark { width: 64px; height: 64px; }
+.dont .show::after { content: ""; position: absolute; inset: 14px; background: linear-gradient(to top right, transparent calc(50% - 1px), var(--danger) calc(50% - 1px), var(--danger) calc(50% + 1px), transparent calc(50% + 1px)); opacity: .75; pointer-events: none; }
+.dont p { padding: 12px 14px; font-size: .88rem; border-top: 1px solid var(--line); }
+.dont p::before { content: "✕ "; color: var(--danger); font-weight: 700; }
+
+.copyrow { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; align-items: center; }
+button { font: 500 .85rem var(--f-mono); padding: 10px 16px; border-radius: 4px; border: 1.5px solid var(--fg); background: transparent; color: var(--fg); cursor: pointer; }
+button:hover { background: var(--fg); color: var(--bg); }
+#copy-status { font-family: var(--f-mono); font-size: .8rem; color: var(--leo-text); }
+
+/* ---------- CORES ---------- */
+.swatches { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+.sw { border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); display: grid; grid-template-rows: 170px auto; }
+.sw .chip { padding: 16px; display: flex; flex-direction: column; justify-content: space-between; }
+.sw .chip .role { font-family: var(--f-mono); font-size: .7rem; letter-spacing: .12em; }
+.sw .chip .nm { font-family: var(--f-display); font-weight: 700; font-size: 1.45rem; line-height: 1; }
+.sw dl { margin: 0; padding: 14px 16px; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-family: var(--f-mono); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.sw dt { color: var(--muted); }
+.sw dd { margin: 0; }
+.sw .use { grid-column: 1 / -1; font-family: var(--f-body); font-size: .85rem; color: var(--muted); padding-top: 6px; border-top: 1px dashed var(--line); margin-top: 6px; }
+.ratio { margin-top: 36px; display: grid; gap: 10px; }
+.ratio .barline { display: flex; height: 44px; border-radius: 4px; overflow: hidden; border: 1px solid var(--line); }
+.ratio .barline div { display: grid; place-items: center; font-family: var(--f-mono); font-size: .72rem; }
+.split-rule { margin-top: 36px; display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); align-items: center; }
+.split { height: 150px; border-radius: 6px; background: linear-gradient(115deg, var(--leo) 50%, var(--radu) 50%); }
+.split-bad { height: 150px; border-radius: 6px; background: linear-gradient(115deg, var(--leo), var(--radu)); position: relative; }
+.split-bad::after { content: "✕ degradê"; position: absolute; left: 12px; bottom: 10px; font-family: var(--f-mono); font-size: .75rem; background: var(--ink); color: var(--paper); padding: 3px 8px; border-radius: 3px; }
+.split::after { content: "✓ divisão"; display: inline-block; margin: 0 0 0 12px; transform: translateY(116px); font-family: var(--f-mono); font-size: .75rem; background: var(--ink); color: var(--paper); padding: 3px 8px; border-radius: 3px; }
+.pair { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+.pair > div { display: grid; gap: 10px; }
+.pair figcaption, .pair .label { font-size: .75rem; }
+
+/* ---------- TIPO ---------- */
+.type-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.spec { display: grid; gap: 14px; align-content: start; }
+.spec .aa { font-size: 5rem; line-height: 1; }
+.spec .use { color: var(--muted); font-size: .92rem; }
+.spec .chars { font-size: 1.05rem; word-break: break-all; color: var(--muted); }
+.scale { margin-top: 28px; display: grid; gap: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); overflow: hidden; }
+.scale div { display: grid; grid-template-columns: 120px 1fr; gap: 16px; align-items: baseline; padding: 14px 20px; border-top: 1px solid var(--line); min-width: 0; }
+.scale div:first-child { border-top: 0; }
+.scale .k { font-family: var(--f-mono); font-size: .72rem; color: var(--muted); }
+.scale .v { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .scale div { grid-template-columns: 1fr; gap: 4px; } }
+
+/* ---------- ELEMENTOS ---------- */
+.el-show { min-height: 160px; display: grid; place-items: center; margin-bottom: 16px; border-radius: 4px; }
+.dotmap { background: var(--ink); background-image: radial-gradient(rgba(169,132,255,.4) 1.2px, transparent 1.3px); background-size: 14px 14px; width: 100%; }
+.hudframe { position: relative; padding: 18px 26px; font-family: var(--f-display); font-weight: 600; font-size: 1.2rem; }
+.hudframe::before, .hudframe::after { content: ""; position: absolute; width: 14px; height: 14px; border: 2px solid var(--leo-text); }
+.hudframe::before { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.hudframe::after { bottom: 0; right: 0; border-left: 0; border-top: 0; border-color: var(--radu-text); }
+.tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.tag { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .12em; padding: 5px 10px 5px 8px; border-radius: 3px; display: inline-flex; gap: 8px; align-items: center; font-weight: 500; }
+.tag::before { content: ""; width: 7px; height: 7px; transform: rotate(45deg); background: currentColor; }
+.tag.main { background: var(--leo); color: var(--ink); }
+.tag.side { background: var(--radu); color: #fff; }
+.tag.leg { background: var(--xp); color: var(--ink); }
+.tag.done { border: 1.5px solid var(--line); color: var(--muted); }
+.toast { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: center; background: var(--ink); color: var(--paper); padding: 12px 16px 12px 12px; border-radius: 4px; border-left: 4px solid var(--xp); max-width: 300px; }
+.toast .ic { width: 44px; height: 44px; display: grid; place-items: center; background: #221D30; border-radius: 3px; }
+.toast .ic i { width: 16px; height: 16px; transform: rotate(45deg); background: var(--xp); }
+.toast small { font-family: var(--f-mono); font-size: .65rem; letter-spacing: .12em; color: var(--xp); display: block; }
+.toast b { font-family: var(--f-display); font-weight: 600; font-size: 1rem; }
+
+/* ---------- VOZ ---------- */
+.voice { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); margin-bottom: 32px; }
+.voice .card h3 { margin-bottom: 8px; }
+.voice .card p { color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; min-width: 560px; }
+th, td { text-align: left; padding: 14px 18px; border-top: 1px solid var(--line); vertical-align: top; font-size: .95rem; }
+th { font-family: var(--f-mono); font-weight: 500; font-size: .72rem; letter-spacing: .1em; color: var(--muted); border-top: 0; }
+td.yes { color: var(--fg); font-weight: 500; }
+td.yes::before { content: "✓ "; color: var(--leo-text); font-weight: 700; }
+td.no { color: var(--muted); }
+td.no::before { content: "✕ "; color: var(--danger); font-weight: 700; }
+
+/* ---------- APLICAÇÕES ---------- */
+.apps { display: grid; gap: 24px; }
+.cards-row { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.bcard { aspect-ratio: 85 / 55; max-width: 100%; border-radius: 8px; padding: 7%; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 18px 40px -22px rgba(20,17,28,.55); position: relative; overflow: hidden; }
+.bcard.front { background: var(--ink); color: var(--paper); background-image: radial-gradient(rgba(169,132,255,.25) 1px, transparent 1.2px); background-size: 12px 12px; justify-content: center; align-items: center; }
+.bcard.person { background: #FFFFFF; color: var(--ink); }
+.bcard.person::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; }
+.bcard.p-leo::before { background: var(--leo); }
+.bcard.p-radu::before { background: var(--radu); }
+.bcard .nm { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.3rem, 3vw, 1.7rem); line-height: 1; }
+.bcard .rl { font-family: var(--f-mono); font-size: .7rem; letter-spacing: .1em; color: #5F5973; margin-top: 6px; }
+.bcard .ct { font-family: var(--f-mono); font-size: .72rem; line-height: 1.7; color: #3A3448; }
+.bcard .row { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; }
+.bcard .row .mark { width: 34px; height: 34px; }
+.icons { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
+.icon { width: 96px; height: 96px; border-radius: 22px; display: grid; place-items: center; }
+.icon .mark { width: 64%; height: 64%; }
+.icon-cap { font-family: var(--f-mono); font-size: .7rem; color: var(--muted); margin-top: 8px; text-align: center; }
+.screens { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.splash { aspect-ratio: 16 / 10; max-width: 100%; border-radius: 6px; background: var(--ink); color: var(--paper); display: grid; place-items: center; align-content: center; gap: 22px; padding: 24px; background-image: radial-gradient(rgba(169,132,255,.2) 1px, transparent 1.2px); background-size: 18px 18px; }
+.splash .mark { width: 72px; height: 72px; }
+.splash .load { width: min(260px, 80%); display: grid; gap: 8px; }
+.splash .load small { font-family: var(--f-mono); font-size: .72rem; color: #A49EB8; display: flex; justify-content: space-between; }
+.splash .bar { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; height: 10px; }
+.splash .bar i { background: #2E2942; }
+.splash .bar i.g { background: var(--leo); }
+.splash .bar i.p { background: var(--radu-soft); }
+.splash .bar i.blink { animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { background: #2E2942; } }
+.post { aspect-ratio: 16 / 10; max-width: 100%; border-radius: 6px; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; }
+.post .l { background: var(--leo); color: var(--ink); padding: 8%; display: flex; flex-direction: column; justify-content: space-between; }
+.post .r { background: var(--radu); color: #fff; padding: 8%; display: flex; flex-direction: column; justify-content: flex-end; }
+.post .l small, .post .r small { font-family: var(--f-mono); font-size: .68rem; letter-spacing: .14em; }
+.post .big { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.4rem, 3.4vw, 2rem); line-height: 1; }
+.app-label { font-family: var(--f-mono); font-size: .75rem; color: var(--muted); margin-top: 10px; }
+
+footer { border-top: 1px solid var(--line); padding-block: 40px; }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
+footer .mini-lock .mark { width: 36px; height: 36px; }
+footer .mini-lock .wm { font-size: 1.3rem; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sq" viewBox="0 0 64 64">
+      <polyline points="22,17 9,32 22,47" fill="none" stroke="var(--road, #1FCB7E)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="42,17 55,32 42,47" fill="none" stroke="var(--route, #7A3CF0)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="var(--bang, currentColor)" stroke="var(--bang, currentColor)" stroke-width="2" stroke-linejoin="round"><path d="M28.5 12 H35.5 L34.3 36 H29.7 Z"/><path d="M32 41 L36.5 45.5 L32 50 L27.5 45.5 Z"/></g>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="who"><svg class="mark" width="22" height="22" style="--route:#A984FF"><use href="#sq"/></svg> SIDEQUEST STUDIO</div>
+      <div>MANUAL DE MARCA · v1.0 · 2026</div>
+    </div>
+    <div class="stage">
+      <i class="c3"></i><i class="c4"></i>
+      <div class="lockup">
+        <svg class="mark" viewBox="0 0 64 64" aria-label="Símbolo SideQuest">
+          <polyline points="22,17 9,32 22,47" fill="none" stroke="#1FCB7E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="42,17 55,32 42,47" fill="none" stroke="#A984FF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <g class="bang" fill="#F7F6FB" stroke="#F7F6FB" stroke-width="2" stroke-linejoin="round"><path d="M28.5 12 H35.5 L34.3 36 H29.7 Z"/><path d="M32 41 L36.5 45.5 L32 50 L27.5 45.5 Z"/></g>
+        </svg>
+        <div>
+          <div class="wordmark">Side<span class="q">Quest</span></div>
+          <div class="studio">STUDIO</div>
+        </div>
+      </div>
+      <div class="jp" lang="ja">サイドクエスト・スタジオ</div>
+      <p class="tagline">Software feito com alma de jogador.</p>
+      <div class="hud">
+        <span>PARTY <b>Leo + Raduchiu</b></span>
+        <span>CLASSE <b>Estúdio de software</b></span>
+        <span>STATUS <b>Quest aceita</b></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="essencia">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label"><b>//</b> essência</span>
+    </div>
+    <div class="essence">
+      <div style="display:grid; gap:28px">
+        <p class="manifesto">As melhores histórias acontecem <em>fora do caminho principal.</em></p>
+        <div class="text">
+          <p>Em todo RPG existe a missão principal, e existem as side quests: aquelas que você faz porque quer, com mais cuidado, mais curiosidade e mais personalidade. É ali que o jogo ganha alma.</p>
+          <p>A SideQuest Studio nasceu de dois amigos programadores, apaixonados por jogos e animes, que tratam cada projeto como essa missão especial. A marca carrega as cores dos dois: o verde do Leo e o roxo do Raduchiu, sempre lado a lado.</p>
+        </div>
+      </div>
+      <div class="questlog" aria-label="Missão, visão e valores">
+        <div class="quest main"><i class="d"></i><div><div class="t">MISSÃO PRINCIPAL</div><p>Criar software com o cuidado de quem zera um jogo em 100%.</p></div></div>
+        <div class="quest main"><i class="d"></i><div><div class="t">VISÃO</div><p>Ser o estúdio que clientes escolhem quando o projeto precisa de personalidade.</p></div></div>
+        <div class="quest"><i class="d"></i><div><div class="t">VALOR · JOGAR EM PARTY</div><p>Cliente e estúdio no mesmo time, com o mesmo objetivo.</p></div></div>
+        <div class="quest"><i class="d"></i><div><div class="t">VALOR · POLIMENTO</div><p>O detalhe que ninguém pediu é o que todo mundo lembra.</p></div></div>
+        <div class="quest"><i class="d"></i><div><div class="t">VALOR · EXPLORAR</div><p>Curiosidade antes de certeza. Testar, aprender, iterar.</p></div></div>
+        <div class="quest"><i class="d"></i><div><div class="t">VALOR · CÓDIGO HONESTO</div><p>Prazos reais, código legível, sem promessas de patch milagroso.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="party">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label"><b>//</b> seleção de personagem</span>
+      <h2>A party fundadora</h2>
+      <p class="lede">Cada fundador tem uma cor na marca. Use os cartões abaixo como referência para apresentações, página "Sobre" e redes sociais.</p>
+    </div>
+    <div class="party">
+      <article class="hero-card leo">
+        <i class="big-d"></i>
+        <div class="p1">PLAYER 1 · COFUNDADOR</div>
+        <h3>Leo</h3>
+        <div class="cls">Classe: Programador · Cor: Verde Leo #1FCB7E</div>
+        <div class="stats">
+          <div class="stat"><span>CÓDIGO</span><div class="bar"><span style="width:92%"></span></div></div>
+          <div class="stat"><span>JOGOS</span><div class="bar"><span style="width:96%"></span></div></div>
+          <div class="stat"><span>ANIME</span><div class="bar"><span style="width:88%"></span></div></div>
+        </div>
+      </article>
+      <article class="hero-card radu">
+        <i class="big-d"></i>
+        <div class="p1">PLAYER 2 · COFUNDADOR</div>
+        <h3>Raduchiu</h3>
+        <div class="cls">Classe: Programador · Cor: Roxo Raduchiu #7A3CF0</div>
+        <div class="stats">
+          <div class="stat"><span>CÓDIGO</span><div class="bar"><span style="width:92%"></span></div></div>
+          <div class="stat"><span>JOGOS</span><div class="bar"><span style="width:94%"></span></div></div>
+          <div class="stat"><span>ANIME</span><div class="bar"><span style="width:95%"></span></div></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="logo">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label"><b>//</b> logo</span>
+      <h2>Código e quest no mesmo símbolo</h2>
+      <p class="lede">O símbolo junta os dois mundos do estúdio. Os sinais &lt; &gt; vêm do código; o ! é o aviso que aparece sobre o personagem quando há uma missão nova. Lido junto, &lt;!&gt; quer dizer: tem uma quest aqui. Verde abre, roxo fecha, como os dois fundadores em cada projeto.</p>
+    </div>
+
+    <div class="anatomy">
+      <div class="anatomy-fig">
+        <svg viewBox="0 0 360 240" role="img" aria-label="Anatomia do símbolo">
+          <g transform="translate(84 24) scale(3)" style="color:var(--fg)">
+            <use href="#sq" width="64" height="64"/>
+          </g>
+          <g font-family="JetBrains Mono, monospace" font-size="13" fill="var(--fg)">
+            <line x1="40" y1="120" x2="98" y2="120" stroke="var(--fg)" stroke-width="1"/>
+            <circle cx="28" cy="120" r="11" fill="none" stroke="var(--fg)" stroke-width="1.5"/><text x="28" y="124.5" text-anchor="middle">1</text>
+            <line x1="262" y1="120" x2="300" y2="120" stroke="var(--fg)" stroke-width="1"/>
+            <circle cx="312" cy="120" r="11" fill="none" stroke="var(--fg)" stroke-width="1.5"/><text x="312" y="124.5" text-anchor="middle">2</text>
+            <line x1="210" y1="35" x2="190" y2="58" stroke="var(--fg)" stroke-width="1"/>
+            <circle cx="220" cy="26" r="11" fill="none" stroke="var(--fg)" stroke-width="1.5"/><text x="220" y="30.5" text-anchor="middle">3</text>
+          </g>
+        </svg>
+      </div>
+      <div class="legend">
+        <div><span class="k">1</span><p><strong>Abre: &lt; em Verde Leo</strong>O início de toda tag de código. Representa a base técnica: código que funciona e entrega no prazo.</p></div>
+        <div><span class="k">2</span><p><strong>Fecha: &gt; em Roxo Raduchiu</strong>O fechamento da tag. Os dois sinais juntos formam o par que abre e fecha cada projeto.</p></div>
+        <div><span class="k">3</span><p><strong>A quest: !</strong>O aviso que flutua sobre o personagem que tem uma missão para você. O ponto é um losango, a forma de cristal dos jogos. Fica em Tinta ou Pergaminho, para os dois lados terem o mesmo peso.</p></div>
+      </div>
+    </div>
+
+    <div class="versions">
+      <div class="ver"><div class="show on-paper">
+        <div class="mini-lock"><svg class="mark"><use href="#sq"/></svg><div><div class="wm">Side<span style="color:#7A3CF0">Quest</span></div><div class="st" style="color:#0E9A5C">STUDIO</div></div></div>
+      </div><div class="cap"><b>Horizontal</b><span>Versão principal. Site, documentos, assinatura de e-mail.</span></div></div>
+
+      <div class="ver"><div class="show on-ink">
+        <div class="mini-lock" style="--route:#A984FF"><svg class="mark"><use href="#sq"/></svg><div><div class="wm">Side<span style="color:#A984FF">Quest</span></div><div class="st" style="color:#1FCB7E">STUDIO</div></div></div>
+      </div><div class="cap"><b>Horizontal sobre Tinta</b><span>Fundos escuros. O roxo clareia para #A984FF.</span></div></div>
+
+      <div class="ver"><div class="show on-paper">
+        <div class="stack"><svg class="mark"><use href="#sq"/></svg><div class="wm">Side<span style="color:#7A3CF0">Quest</span></div><div class="st" style="color:#0E9A5C">STUDIO</div></div>
+      </div><div class="cap"><b>Vertical</b><span>Espaços quadrados: crachás, adesivos, camisetas.</span></div></div>
+
+      <div class="ver"><div class="show on-leo" style="--road:#14111C; --route:#14111C">
+        <svg class="mark" width="76" height="76"><use href="#sq"/></svg>
+      </div><div class="cap"><b>Monocromático</b><span>Uma cor só sobre Verde Leo, Roxo ou foto. Tinta ou branco.</span></div></div>
+    </div>
+
+    <div class="rules">
+      <div class="card">
+        <span class="label"><b>//</b> área de proteção</span>
+        <div class="clear">
+          <div class="box">
+            <i style="top:6px; left:50%; transform:translateX(-50%)">x</i>
+            <i style="bottom:6px; left:50%; transform:translateX(-50%)">x</i>
+            <i style="left:8px; top:50%; transform:translateY(-50%)">x</i>
+            <i style="right:8px; top:50%; transform:translateY(-50%)">x</i>
+            <svg class="mark"><use href="#sq"/></svg>
+          </div>
+        </div>
+        <p class="lede" style="font-size:.92rem">Deixe livre ao redor do logo um espaço igual à largura do sinal &lt; (x). Nada de texto ou imagem dentro dessa área.</p>
+      </div>
+      <div class="card">
+        <span class="label"><b>//</b> tamanho mínimo</span>
+        <div class="minsize">
+          <figure><svg class="mark" width="48" height="48"><use href="#sq"/></svg><figcaption>48 px · ideal</figcaption></figure>
+          <figure><svg class="mark" width="24" height="24"><use href="#sq"/></svg><figcaption>24 px · mínimo</figcaption></figure>
+          <figure><svg class="mark" width="16" height="16" viewBox="0 0 64 64"><polyline points="21,16 7,32 21,48" fill="none" stroke="#1FCB7E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><polyline points="43,16 57,32 43,48" fill="none" stroke="#7A3CF0" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><g fill="currentColor"><rect x="27" y="10" width="10" height="27" rx="3"/><rect x="27" y="42" width="10" height="10" rx="2"/></g></svg><figcaption>16 px · favicon</figcaption></figure>
+        </div>
+        <p class="lede" style="font-size:.92rem; margin-top:14px">Abaixo de 24 px, use a versão favicon: traços mais grossos e ponto quadrado, para o símbolo continuar legível em telas pequenas. Logo horizontal: mínimo de 120 px de largura.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:40px"><span class="label"><b>//</b> usos incorretos</span></div>
+    <div class="donts">
+      <div class="dont"><div class="show"><svg class="mark" style="transform:rotate(-25deg)"><use href="#sq"/></svg></div><p>Girar ou inclinar</p></div>
+      <div class="dont"><div class="show"><svg class="mark" style="transform:scaleX(1.6)"><use href="#sq"/></svg></div><p>Esticar ou achatar</p></div>
+      <div class="dont"><div class="show"><svg class="mark" style="--road:#7A3CF0; --route:#1FCB7E"><use href="#sq"/></svg></div><p>Inverter as cores</p></div>
+      <div class="dont"><div class="show"><svg class="mark" style="--road:#E8742A; --route:#2A7BE8"><use href="#sq"/></svg></div><p>Usar outras cores</p></div>
+    </div>
+
+    <div class="copyrow">
+      <button type="button" id="copy-mark">Copiar SVG do símbolo</button>
+      <button type="button" id="copy-icon">Copiar SVG do ícone de app</button>
+      <span id="copy-status" role="status"></span>
+    </div>
+  </div>
+</section>
+
+<section id="cores">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label"><b>//</b> cores</span>
+      <h2>Duas cores, dois fundadores</h2>
+      <p class="lede">Verde e roxo são as cores de assinatura. Tinta e Pergaminho fazem o trabalho pesado nos fundos e textos. O Ouro XP aparece só em momentos de conquista.</p>
+    </div>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:var(--leo); color:var(--ink)"><span class="role">ASSINATURA · LEO</span><span class="nm">Verde Leo</span></div>
+        <dl><dt>HEX</dt><dd>#1FCB7E</dd><dt>RGB</dt><dd>31 203 126</dd><dt>Texto</dt><dd>#0E9A5C</dd><dd class="use">Caminho principal, botões de ação, sucesso. Texto sobre ele sempre em Tinta.</dd></dl></div>
+      <div class="sw"><div class="chip" style="background:var(--radu); color:#fff"><span class="role">ASSINATURA · RADUCHIU</span><span class="nm">Roxo Raduchiu</span></div>
+        <dl><dt>HEX</dt><dd>#7A3CF0</dd><dt>RGB</dt><dd>122 60 240</dd><dt>Escuro</dt><dd>#A984FF</dd><dd class="use">Marcador de quest, links, destaques. Texto sobre ele sempre branco.</dd></dl></div>
+      <div class="sw"><div class="chip" style="background:var(--ink); color:var(--paper)"><span class="role">BASE</span><span class="nm">Tinta</span></div>
+        <dl><dt>HEX</dt><dd>#14111C</dd><dt>RGB</dt><dd>20 17 28</dd><dd class="use">Fundos escuros, texto principal. Um preto com leve toque de roxo.</dd></dl></div>
+      <div class="sw"><div class="chip" style="background:var(--paper); color:var(--ink); border-bottom:1px solid var(--line)"><span class="role">BASE</span><span class="nm">Pergaminho</span></div>
+        <dl><dt>HEX</dt><dd>#F7F6FB</dd><dt>RGB</dt><dd>247 246 251</dd><dd class="use">Fundos claros, papelaria, documentos.</dd></dl></div>
+      <div class="sw"><div class="chip" style="background:var(--xp); color:var(--ink)"><span class="role">PONTUAL</span><span class="nm">Ouro XP</span></div>
+        <dl><dt>HEX</dt><dd>#FFC94A</dd><dt>RGB</dt><dd>255 201 74</dd><dd class="use">Conquistas, lançamentos, selos "lendário". Nunca como cor de fundo grande.</dd></dl></div>
+    </div>
+
+    <div class="ratio">
+      <span class="label"><b>//</b> proporção de uso</span>
+      <div class="barline">
+        <div style="flex:30; background:var(--ink); color:var(--paper)">TINTA 30%</div>
+        <div style="flex:30; background:var(--paper); color:var(--ink)">PERG. 30%</div>
+        <div style="flex:18; background:var(--leo); color:var(--ink)">VERDE 18%</div>
+        <div style="flex:18; background:var(--radu); color:#fff">ROXO 18%</div>
+        <div style="flex:4; background:var(--xp); color:var(--ink)" title="Ouro XP 4%"></div>
+      </div>
+    </div>
+
+    <div class="split-rule">
+      <div>
+        <h3>Lado a lado, nunca misturados</h3>
+        <p class="lede" style="margin-top:10px">Quando verde e roxo aparecem juntos, eles dividem o espaço com um corte limpo, como uma tela de dois jogadores. Não use degradê entre eles: a mistura vira um azul acinzentado e apaga a identidade de cada um.</p>
+      </div>
+      <div class="pair">
+        <div class="split"></div>
+        <div class="split-bad"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tipografia">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label"><b>//</b> tipografia</span>
+      <h2>Interface de jogo, leitura de documentação</h2>
+      <p class="lede">Três famílias, todas gratuitas no Google Fonts. A display lembra o HUD de um jogo, a de texto é limpa para ler muito, e a mono é a voz de programador da marca.</p>
+    </div>
+    <div class="type-grid">
+      <div class="card spec">
+        <span class="label">DISPLAY · TÍTULOS</span>
+        <div class="aa" style="font-family:var(--f-display); font-weight:700">Aa</div>
+        <h3 style="font-size:1.6rem">Chakra Petch</h3>
+        <p class="use">Títulos, logotipo, números de destaque. Pesos 600 e 700. Cantos chanfrados que remetem a interfaces de jogos.</p>
+        <p class="chars" style="font-family:var(--f-display)">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</p>
+      </div>
+      <div class="card spec">
+        <span class="label">TEXTO · CORPO</span>
+        <div class="aa" style="font-family:var(--f-body); font-weight:500">Aa</div>
+        <h3 style="font-size:1.6rem; font-family:var(--f-body)">Instrument Sans</h3>
+        <p class="use">Parágrafos, interfaces, propostas comerciais. Pesos 400, 500 e 600.</p>
+        <p class="chars" style="font-family:var(--f-body)">abcdefghijklmnopqrstuvwxyz 0123456789</p>
+      </div>
+      <div class="card spec">
+        <span class="label">MONO · DETALHES</span>
+        <div class="aa" style="font-family:var(--f-mono)">{}</div>
+        <h3 style="font-size:1.6rem; font-family:var(--f-mono); font-weight:500">JetBrains Mono</h3>
+        <p class="use">Rótulos, a palavra STUDIO, trechos de código, legendas e dados técnicos.</p>
+        <p class="chars" style="font-family:var(--f-mono)">const quest = "aceita"; // =&gt; 100%</p>
+      </div>
+    </div>
+    <div class="scale">
+      <div><span class="k">H1 · 64/0.9 · 700</span><span class="v" style="font-family:var(--f-display); font-weight:700; font-size:clamp(2rem,6vw,4rem); line-height:.95">Nova quest aceita</span></div>
+      <div><span class="k">H2 · 40/1.1 · 700</span><span class="v" style="font-family:var(--f-display); font-weight:700; font-size:clamp(1.6rem,4vw,2.5rem); line-height:1.1">Seu app, nível lendário</span></div>
+      <div><span class="k">H3 · 22/1.2 · 600</span><span class="v" style="font-family:var(--f-display); font-weight:600; font-size:1.4rem">Desenvolvimento web e mobile</span></div>
+      <div><span class="k">CORPO · 16/1.6</span><span class="v">A gente cuida de cada detalhe do seu software como se fosse a última missão antes do chefe final.</span></div>
+      <div><span class="k">RÓTULO · 12 MONO</span><span class="v" style="font-family:var(--f-mono); font-size:.78rem; letter-spacing:.12em">MISSÃO PRINCIPAL · v2.4.0</span></div>
+    </div>
+    <p class="lede" style="margin-top:20px; font-size:.92rem">Toque de anime: em peças especiais, o nome pode aparecer em katakana, サイドクエスト, com a fonte Dela Gothic One. Use como assinatura secundária, nunca no lugar do logo.</p>
+  </div>
+</section>
+
+<section id="elementos">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label"><b>//</b> elementos gráficos</span>
+      <h2>O kit do jogador</h2>
+      <p class="lede">Elementos de apoio que vêm do mundo dos jogos. Use um ou dois por peça para não poluir.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="el-show dotmap"></div>
+        <h3>Grade de mapa</h3>
+        <p class="lede" style="font-size:.92rem; margin-top:6px">Pontos em roxo a cada 14–22 px sobre Tinta. Fundo padrão de capas, telas de carregamento e cartões.</p>
+      </div>
+      <div class="card">
+        <div class="el-show"><div class="hudframe">Moldura HUD</div></div>
+        <h3>Cantos de HUD</h3>
+        <p class="lede" style="font-size:.92rem; margin-top:6px">Cantoneiras em verde e roxo, em lados opostos, para enquadrar títulos e imagens de destaque.</p>
+      </div>
+      <div class="card">
+        <div class="el-show"><div class="tags"><span class="tag main">MAIN</span><span class="tag side">SIDE</span><span class="tag leg">LENDÁRIA</span><span class="tag done">CONCLUÍDA</span></div></div>
+        <h3>Etiquetas de quest</h3>
+        <p class="lede" style="font-size:.92rem; margin-top:6px">Para status de projetos, categorias do blog e cases do portfólio.</p>
+      </div>
+      <div class="card">
+        <div class="el-show"><div class="toast"><span class="ic"><i></i></span><div><small>CONQUISTA DESBLOQUEADA</small><b>Primeiro deploy</b></div></div></div>
+        <h3>Conquista</h3>
+        <p class="lede" style="font-size:.92rem; margin-top:6px">Para anunciar lançamentos, marcos e novos clientes. Único lugar onde o Ouro XP aparece com destaque.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="voz">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label"><b>//</b> tom de voz</span>
+      <h2>Fala como um bom parceiro de party</h2>
+    </div>
+    <div class="voice">
+      <div class="card"><h3>Direto</h3><p>Frases curtas, verbos claros. O cliente entende o que vai acontecer sem precisar de manual.</p></div>
+      <div class="card"><h3>Animado, sem exagero</h3><p>Referências de jogos e animes como tempero, não como prato principal. Uma por texto já basta.</p></div>
+      <div class="card"><h3>Técnico quando precisa</h3><p>Com devs, falamos de stack e arquitetura. Com clientes, falamos de resultado.</p></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>SITUAÇÃO</th><th>ASSIM</th><th>ASSIM NÃO</th></tr></thead>
+        <tbody>
+          <tr><td>Projeto entregue</td><td class="yes">Missão cumprida: seu app está no ar.</td><td class="no">Informamos que o processo de deploy foi concluído com êxito.</td></tr>
+          <tr><td>Erro no sistema</td><td class="yes">Algo deu errado ao salvar. Tente de novo em alguns segundos.</td><td class="no">GAME OVER!!! Seu progresso foi perdido kkk</td></tr>
+          <tr><td>Chamada no site</td><td class="yes">Tem uma ideia? Vamos montar a party.</td><td class="no">Soluções sinérgicas de software para alavancar seu negócio.</td></tr>
+          <tr><td>Novo cliente</td><td class="yes">Nova quest aceita. Bem-vindo à party!</td><td class="no">Prezado cliente, seu cadastro foi efetuado.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="aplicacoes">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label"><b>//</b> aplicações</span>
+      <h2>A marca em campo</h2>
+    </div>
+    <div class="apps">
+      <div>
+        <div class="cards-row">
+          <div><div class="bcard front"><div class="mini-lock" style="--route:#A984FF"><svg class="mark"><use href="#sq"/></svg><div><div class="wm" style="color:#F7F6FB">Side<span style="color:#A984FF">Quest</span></div><div class="st" style="color:#1FCB7E">STUDIO</div></div></div></div><p class="app-label">Cartão de visita · frente</p></div>
+          <div><div class="bcard person p-leo"><div><div class="nm">Leo</div><div class="rl">COFUNDADOR · DESENVOLVEDOR</div></div><div class="row"><div class="ct">leo@sidequest.studio<br>sidequest.studio</div><svg class="mark"><use href="#sq"/></svg></div></div><p class="app-label">Verso · Leo</p></div>
+          <div><div class="bcard person p-radu"><div><div class="nm">Raduchiu</div><div class="rl">COFUNDADOR · DESENVOLVEDOR</div></div><div class="row"><div class="ct">raduchiu@sidequest.studio<br>sidequest.studio</div><svg class="mark"><use href="#sq"/></svg></div></div><p class="app-label">Verso · Raduchiu</p></div>
+        </div>
+        <p class="lede" style="font-size:.85rem; margin-top:8px">Domínio e e-mails são exemplos de formato.</p>
+      </div>
+
+      <div class="card">
+        <span class="label"><b>//</b> ícones e avatares</span>
+        <div class="icons" style="margin-top:18px">
+          <div><div class="icon" style="background:var(--ink); color:#F7F6FB; --route:#A984FF"><svg class="mark"><use href="#sq"/></svg></div><div class="icon-cap">App · GitHub</div></div>
+          <div><div class="icon" style="background:#F7F6FB; color:#14111C; border:1px solid var(--line)"><svg class="mark"><use href="#sq"/></svg></div><div class="icon-cap">Claro</div></div>
+          <div><div class="icon" style="background:var(--leo); color:#14111C; --road:#14111C; --route:#14111C"><svg class="mark"><use href="#sq"/></svg></div><div class="icon-cap">Leo</div></div>
+          <div><div class="icon" style="background:var(--radu); color:#fff; --road:#fff; --route:#fff"><svg class="mark"><use href="#sq"/></svg></div><div class="icon-cap">Raduchiu</div></div>
+          <div><div class="icon" style="border-radius:50%; background:linear-gradient(90deg, var(--leo) 50%, var(--radu) 50%); color:#14111C; --road:#14111C; --route:#fff; --bang:#14111C"><svg class="mark"><use href="#sq"/></svg></div><div class="icon-cap">Discord · split</div></div>
+        </div>
+      </div>
+
+      <div class="screens">
+        <div>
+          <div class="splash">
+            <svg class="mark" style="--route:#A984FF"><use href="#sq"/></svg>
+            <div class="load">
+              <div class="bar"><i class="g"></i><i class="g"></i><i class="g"></i><i class="g"></i><i class="g"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p blink"></i><i></i><i></i><i></i></div>
+              <small><span>Carregando nova quest</span><span>75%</span></small>
+            </div>
+          </div>
+          <p class="app-label">Tela de carregamento · apps e site</p>
+        </div>
+        <div>
+          <div class="post">
+            <div class="l"><small>SIDEQUEST STUDIO</small><div class="big">Seu projeto merece uma side quest.</div></div>
+            <div class="r"><small>sidequest.studio →</small></div>
+          </div>
+          <p class="app-label">Post para redes sociais · divisão verde/roxo</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="mini-lock"><svg class="mark"><use href="#sq"/></svg><div><div class="wm">Side<span style="color:var(--radu-text)">Quest</span></div><div class="st" style="color:var(--leo-text)">STUDIO</div></div></div>
+    <span class="label">Manual de marca v1.0 · Leo &amp; Raduchiu · 2026</span>
+  </div>
+</footer>
+
+<script>
+const MARK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <polyline points="22,17 9,32 22,47" fill="none" stroke="#1FCB7E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="42,17 55,32 42,47" fill="none" stroke="#7A3CF0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#14111C" stroke="#14111C" stroke-width="2" stroke-linejoin="round"><path d="M28.5 12 H35.5 L34.3 36 H29.7 Z"/><path d="M32 41 L36.5 45.5 L32 50 L27.5 45.5 Z"/></g>
+</svg>`;
+const ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#14111C"/>
+  <g transform="translate(8 8) scale(0.75)">
+    <polyline points="22,17 9,32 22,47" fill="none" stroke="#1FCB7E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="42,17 55,32 42,47" fill="none" stroke="#A984FF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="#F7F6FB" stroke="#F7F6FB" stroke-width="2" stroke-linejoin="round"><path d="M28.5 12 H35.5 L34.3 36 H29.7 Z"/><path d="M32 41 L36.5 45.5 L32 50 L27.5 45.5 Z"/></g>
+  </g>
+</svg>`;
+const status = document.getElementById('copy-status');
+function copy(text, label) {
+  navigator.clipboard.writeText(text).then(
+    () => { status.textContent = label + ' copiado.'; },
+    () => { status.textContent = 'Não foi possível copiar aqui. Os arquivos SVG estão na pasta do projeto.'; }
+  );
+}
+document.getElementById('copy-mark').addEventListener('click', () => copy(MARK, 'SVG do símbolo'));
+document.getElementById('copy-icon').addEventListener('click', () => copy(ICON, 'SVG do ícone'));
+</script>
