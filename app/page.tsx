@@ -117,7 +117,7 @@ export default function Home() {
             <p className="eyebrow">{"// seleção de personagem"}</p>
             <h2>A party</h2>
             <p className="lede">
-              Somos melhores amigos e programadores. Os dois assinam cada projeto.
+              Dois desenvolvedores à frente de cada projeto, da primeira conversa ao app publicado na loja. Você fala direto com quem escreve o código.
             </p>
           </div>
           <div className="party">
