@@ -14,7 +14,7 @@ export function Footer() {
           <a href={`mailto:${site.email}`}>{site.email}</a>
         </nav>
         <p className="footer__copy">
-          <span lang="ja">サイドクエスト・スタジオ</span> · Leo &amp; Raduchiu · 2026
+          <span lang="ja">サイドクエスト・スタジオ</span> · 2026
         </p>
       </div>
     </footer>
