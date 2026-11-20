@@ -33,3 +33,14 @@ Páginas: `/` (início) e `/apps/mypetmatch`, `/apps/levelfit` (cases).
 | `/privacidade` | Política do próprio site, com links para as dos apps |
 
 Os textos ficam em `components/legal/policies.tsx`. Antes de publicar, preencha `legalName`, `cnpj` e `privacyEmail` em `lib/site.ts`, e atualize `policyUpdated` sempre que mudar o texto.
+
+## Sites dos produtos
+
+Cada app tem o próprio site, com layout, fontes e CSS separados do site do estúdio (route groups com layouts raiz próprios):
+
+| Rota | Origem | Arquivos |
+|---|---|---|
+| `/levelfit` | Trazido do repositório `levelfitweb` | `app/(levelfit)/levelfit/`, `components/levelfit/`, `content/levelfit/` |
+| `/mypetmatch` | Criado no mesmo formato, com a identidade do app | `app/(mypetmatch)/mypetmatch/`, `components/mypetmatch/`, `content/mypetmatch/` |
+
+A política e a exclusão de conta de cada app ficam só em `/apps/<app>/privacidade` e `/apps/<app>/excluir-conta`; `/levelfit/privacidade`, `/mypetmatch/privacidade` e as de exclusão redirecionam para lá (`next.config.ts`). Os links das lojas ficam em `content/levelfit/site.ts` e `content/mypetmatch/app.ts`; sem eles, os botões aparecem como "em breve".

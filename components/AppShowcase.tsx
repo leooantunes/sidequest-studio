@@ -28,9 +28,16 @@ export function AppShowcase({ app, flip = false }: { app: ShowcaseApp; flip?: bo
             <span key={s}>{s}</span>
           ))}
         </div>
-        <Link href={`/apps/${app.slug}`} className="showcase__link">
-          Ver o case completo <span aria-hidden="true">→</span>
-        </Link>
+        <div className="showcase__actions">
+          {app.site && (
+            <a href={app.site} className="showcase__link">
+              Visitar o site do {app.name} <span aria-hidden="true">↗</span>
+            </a>
+          )}
+          <Link href={`/apps/${app.slug}`} className={app.site ? "showcase__link showcase__link--ghost" : "showcase__link"}>
+            Ver o case completo <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       </div>
       <div className="showcase__visual">
         {app.slug === "mypetmatch" ? <PetMatchPhone /> : <LevelFitPhone />}

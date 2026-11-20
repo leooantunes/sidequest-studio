@@ -55,7 +55,12 @@ async function CaseContent({ params }: { params: PageProps<"/apps/[slug]">["para
             <h1 className="case__name">{app.name}</h1>
             <p className="case__tagline">{app.tagline}</p>
             <p className="case__summary">{app.summary}</p>
-            <a href={app.repo} target="_blank" rel="noreferrer" className="case__repo">Ver código no GitHub ↗</a>
+            <div className="case__actions">
+              {app.site && (
+                <a href={app.site} className="case__repo">Visitar o site do {app.name} ↗</a>
+              )}
+              <a href={app.repo} target="_blank" rel="noreferrer" className={app.site ? "case__repo case__repo--ghost" : "case__repo"}>Ver código no GitHub ↗</a>
+            </div>
             <div className="case__legal">
               <Link href={`/apps/${app.slug}/privacidade`}>Política de Privacidade</Link>
               <Link href={`/apps/${app.slug}/excluir-conta`}>Excluir conta</Link>

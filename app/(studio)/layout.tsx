@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Bungee, Chakra_Petch, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import "./globals.css";
+import "../globals.css";
 
 const display = Chakra_Petch({ variable: "--font-display", subsets: ["latin"], weight: ["500", "600", "700"] });
 const body = Instrument_Sans({ variable: "--font-body", subsets: ["latin"] });

@@ -9,6 +9,8 @@ export type ShowcaseApp = {
   platforms: string;
   icon: string;
   repo: string;
+  /** Site do produto, quando existe. */
+  site?: string;
   stats: { value: string; label: string }[];
   features: AppFeature[];
   stack: string[];
@@ -27,6 +29,7 @@ export const apps: ShowcaseApp[] = [
     platforms: "iOS e Android",
     icon: "/apps/petmatch-pixel.png",
     repo: "https://github.com/leooantunes/petmatch",
+    site: "/mypetmatch",
     stats: [
       { value: "3", label: "formas de login: e-mail, Google e Apple" },
       { value: "100%", label: "dos anúncios moderados antes de ir ao ar" },
@@ -56,6 +59,7 @@ export const apps: ShowcaseApp[] = [
     platforms: "iOS e Android, com widget",
     icon: "/apps/levelfit-icon.png",
     repo: "https://github.com/leooantunes/levelfit",
+    site: "/levelfit",
     stats: [
       { value: "15", label: "hábitos prontos para montar as metas" },
       { value: "3", label: "rankings: diário, semanal e mensal" },

@@ -354,3 +354,13 @@ img { max-width: 100%; }
 .legal__apps { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
 .legal__app { display: grid; gap: 4px; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); font-size: 0.95rem; }
 .legal__app b { font-family: var(--f-display); font-size: 1.15rem; }
+
+/* ---------- Botões do site do produto ---------- */
+.showcase__actions, .case__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.showcase__actions .showcase__link, .case__actions .case__repo { justify-self: auto; }
+.showcase .showcase__link--ghost { background: transparent; color: inherit; box-shadow: none; border: 2px solid currentColor; font-family: var(--f-mono); letter-spacing: 0; }
+.case .case__repo--ghost { background: transparent; color: inherit; box-shadow: none; border: 2px solid currentColor; }
+
+/* ---------- 404 ---------- */
+.notfound { min-height: 100vh; display: grid; align-items: center; }
+.notfound__inner { display: grid; gap: 24px; padding-block: 64px; }
