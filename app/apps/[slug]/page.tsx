@@ -56,6 +56,10 @@ async function CaseContent({ params }: { params: PageProps<"/apps/[slug]">["para
             <p className="case__tagline">{app.tagline}</p>
             <p className="case__summary">{app.summary}</p>
             <a href={app.repo} target="_blank" rel="noreferrer" className="case__repo">Ver código no GitHub ↗</a>
+            <div className="case__legal">
+              <Link href={`/apps/${app.slug}/privacidade`}>Política de Privacidade</Link>
+              <Link href={`/apps/${app.slug}/excluir-conta`}>Excluir conta</Link>
+            </div>
           </div>
           <div className="case__visual">
             {app.slug === "mypetmatch" ? <PetMatchPhone /> : <LevelFitPhone />}

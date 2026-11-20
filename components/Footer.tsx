@@ -10,6 +10,7 @@ export function Footer() {
         <nav className="footer__nav" aria-label="Rodapé">
           <Link href="/apps/mypetmatch">MyPetMatch</Link>
           <Link href="/apps/levelfit">Level Fit</Link>
+          <Link href="/privacidade">Privacidade</Link>
           <a href={site.github} target="_blank" rel="noreferrer">GitHub</a>
           <a href={`mailto:${site.email}`}>{site.email}</a>
         </nav>
