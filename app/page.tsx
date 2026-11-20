@@ -121,15 +121,15 @@ export default function Home() {
             </p>
           </div>
           <div className="party">
-            <article className="player player--leo">
-              <span className="player__tag">PLAYER 1 · COFUNDADOR</span>
-              <h3>Leo</h3>
-              <p>Desenvolvedor. Gosta de transformar uma ideia solta em app publicado.</p>
-            </article>
             <article className="player player--radu">
-              <span className="player__tag">PLAYER 2 · COFUNDADOR</span>
+              <span className="player__tag">PLAYER 1 · COFUNDADOR</span>
               <h3>Raduchiu</h3>
               <p>Desenvolvedor. Cuida para que cada detalhe funcione do jeito que o usuário espera.</p>
+            </article>
+            <article className="player player--leo">
+              <span className="player__tag">PLAYER 2 · COFUNDADOR</span>
+              <h3>Leo</h3>
+              <p>Desenvolvedor. Gosta de transformar uma ideia solta em app publicado.</p>
             </article>
           </div>
         </div>
