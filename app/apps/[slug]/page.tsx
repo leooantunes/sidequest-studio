@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { LevelFitPhone, PetMatchPhone } from "@/components/PhoneMocks";
 import { apps, getApp } from "@/lib/apps";
 
@@ -16,8 +17,26 @@ export async function generateMetadata(props: PageProps<"/apps/[slug]">): Promis
   return { title: app.name, description: app.summary };
 }
 
-export default async function AppPage(props: PageProps<"/apps/[slug]">) {
-  const { slug } = await props.params;
+export default function AppPage(props: PageProps<"/apps/[slug]">) {
+  return (
+    <Suspense fallback={<CaseLoading />}>
+      <CaseContent params={props.params} />
+    </Suspense>
+  );
+}
+
+function CaseLoading() {
+  return (
+    <section className="case__hero case__hero--loading" aria-busy="true">
+      <div className="wrap">
+        <p className="eyebrow">Carregando quest…</p>
+      </div>
+    </section>
+  );
+}
+
+async function CaseContent({ params }: { params: PageProps<"/apps/[slug]">["params"] }) {
+  const { slug } = await params;
   const app = getApp(slug);
   if (!app) notFound();
 

@@ -313,3 +313,4 @@ img { max-width: 100%; }
 .case__next:hover { border-color: var(--radu-text); }
 .case__next-name { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.6rem, 4vw, 2.4rem); }
 .case__next span:last-child { color: var(--muted); }
+.case__hero--loading { min-height: 60vh; background: var(--bg-alt); }
