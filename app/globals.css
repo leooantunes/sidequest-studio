@@ -254,7 +254,6 @@ img { max-width: 100%; }
 .player__tag { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.12em; opacity: 0.8; }
 .player h3 { font-size: clamp(2.4rem, 5vw, 3.2rem); font-weight: 700; }
 .player p { max-width: 36ch; }
-.player__color { font-family: var(--f-mono); font-size: 0.78rem; margin-top: auto; }
 
 /* ---------- CTA ---------- */
 .cta {

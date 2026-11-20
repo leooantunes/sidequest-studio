@@ -37,7 +37,7 @@ export default function Home() {
             <i className="corner corner--tl" /><i className="corner corner--tr" />
             <i className="corner corner--bl" /><i className="corner corner--br" />
             <p className="eyebrow eyebrow--dark">
-              <span className="dot" /> ESTÚDIO DE SOFTWARE · LEO + RADUCHIU
+              <span className="dot" /> ESTÚDIO DE SOFTWARE
             </p>
             <h1 className="hero__title">
               Software feito com <span className="hl-green">alma</span> de <span className="hl-purple">jogador</span>.
@@ -117,7 +117,7 @@ export default function Home() {
             <p className="eyebrow">{"// seleção de personagem"}</p>
             <h2>A party</h2>
             <p className="lede">
-              Somos melhores amigos e programadores. Cada um tem a sua cor na marca, e os dois assinam cada projeto.
+              Somos melhores amigos e programadores. Os dois assinam cada projeto.
             </p>
           </div>
           <div className="party">
@@ -125,13 +125,11 @@ export default function Home() {
               <span className="player__tag">PLAYER 1 · COFUNDADOR</span>
               <h3>Leo</h3>
               <p>Desenvolvedor. Gosta de transformar uma ideia solta em app publicado.</p>
-              <span className="player__color">Verde Leo</span>
             </article>
             <article className="player player--radu">
               <span className="player__tag">PLAYER 2 · COFUNDADOR</span>
               <h3>Raduchiu</h3>
               <p>Desenvolvedor. Cuida para que cada detalhe funcione do jeito que o usuário espera.</p>
-              <span className="player__color">Roxo Raduchiu</span>
             </article>
           </div>
         </div>
