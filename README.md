@@ -44,3 +44,15 @@ Cada app tem o próprio site, com layout, fontes e CSS separados do site do est�
 | `/mypetmatch` | Criado no mesmo formato, com a identidade do app | `app/(mypetmatch)/mypetmatch/`, `components/mypetmatch/`, `content/mypetmatch/` |
 
 A política e a exclusão de conta de cada app ficam só em `/apps/<app>/privacidade` e `/apps/<app>/excluir-conta`; `/levelfit/privacidade`, `/mypetmatch/privacidade` e as de exclusão redirecionam para lá (`next.config.ts`). Os links das lojas ficam em `content/levelfit/site.ts` e `content/mypetmatch/app.ts`; sem eles, os botões aparecem como "em breve".
+
+### Logo em PNG
+
+Em `brand/logo/png/`, com fundo transparente (exceto o ícone quadrado):
+
+| Arquivo | Uso |
+|---|---|
+| `logo-horizontal.png` / `logo-horizontal-escuro.png` | Logo principal (2640×764), para fundo claro e para fundo escuro |
+| `logo-vertical.png` / `logo-vertical-escuro.png` | Espaços quadrados (1860×1426) |
+| `simbolo.png` / `simbolo-escuro.png` | Só o símbolo `<!>` (1024×1024) |
+| `icone-app.png` | Ícone com cantos arredondados (1024×1024): avatar, Discord, GitHub |
+| `icone-app-quadrado.png` | Ícone sem transparência (1024×1024), para lojas e redes que arredondam sozinhas |
