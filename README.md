@@ -61,3 +61,5 @@ Em `brand/logo/png/`, com fundo transparente (exceto o ícone quadrado):
 ## Vídeo promocional
 
 `brand/video/sidequest-promo.mp4`: 34 s, 1920×1080, com trilha 8-bit original. As fontes para editar e gerar de novo estão em `brand/video/fonte/`.
+
+`brand/video/sidequest-reels.mp4`: Reels vertical de 30 s (1080×1920), em formato de jogo, com efeitos sonoros. Fontes em `brand/video/fonte-reels/`.

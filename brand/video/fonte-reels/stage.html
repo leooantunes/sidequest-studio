@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Instrument+Sans:wght@500;600;700&family=JetBrains+Mono:wght@500;700&family=Press+Start+2P&display=block">
+<style>
+  /* Reels 1080×1920. Zona segura: textos entre y=260 e y=1560, fora da legenda e dos botões do Instagram. */
+  :root {
+    --leo: #1FCB7E; --radu: #7A3CF0; --radu-soft: #A984FF; --xp: #FFC94A; --hp: #FF5A5F;
+    --ink: #14111C; --ink-2: #1B1726; --ink-line: #2E2942; --muted: #A49EB8; --paper: #F7F6FB;
+    --display: "Chakra Petch", sans-serif; --body: "Instrument Sans", sans-serif; --mono: "JetBrains Mono", monospace; --pixel: "Press Start 2P", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--ink); }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: var(--body); color: var(--paper); }
+  .bg { position: absolute; inset: -60px; background-color: var(--ink); background-image: radial-gradient(rgba(169,132,255,.22) 2.4px, transparent 2.6px); background-size: 44px 44px; }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .abs { position: absolute; }
+  .cx { left: 50%; transform: translateX(-50%); }
+  .title { position: absolute; left: 0; right: 0; top: 300px; text-align: center; }
+  .title small { display: block; font: 700 32px var(--mono); color: var(--xp); letter-spacing: .2em; margin-bottom: 22px; }
+  .title h2 { margin: 0; font: 700 104px/1 var(--display); letter-spacing: -2px; }
+  .green { color: var(--leo); } .purple { color: var(--radu-soft); } .gold { color: var(--xp); }
+
+  /* 1. Press start */
+  .press { font: 400 48px var(--pixel); color: var(--paper); letter-spacing: 4px; }
+  .wordmark { font: 700 132px/1 var(--display); letter-spacing: -2px; }
+  .wordmark span { color: var(--radu-soft); }
+  .studio { font: 500 38px var(--mono); letter-spacing: .5em; padding-left: .5em; color: var(--leo); }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+
+  /* 2. Diálogo */
+  .dialog { position: absolute; left: 70px; right: 70px; top: 980px; min-height: 420px; background: #0E0B15; border: 6px solid var(--paper); border-radius: 22px; box-shadow: 0 0 0 6px var(--ink), 0 0 0 12px var(--radu); padding: 56px 56px 48px; }
+  .dialog .who { position: absolute; top: -40px; left: 48px; background: var(--leo); color: var(--ink); font: 400 26px var(--pixel); padding: 16px 22px; border-radius: 10px; }
+  .dialog p { margin: 0; font: 600 58px/1.3 var(--body); min-height: 1.3em; }
+  .dialog p + p { margin-top: 18px; color: var(--xp); }
+  .dialog .next { position: absolute; right: 44px; bottom: 30px; width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 26px solid var(--paper); }
+  .npc { position: absolute; left: 50%; top: 380px; transform: translateX(-50%); display: grid; justify-items: center; }
+  .bigbang { width: 170px; height: 320px; display: grid; justify-items: center; gap: 26px; }
+  .bigbang i:first-child { width: 90px; height: 210px; background: var(--xp); border-radius: 14px; clip-path: polygon(0 0, 100% 0, 84% 100%, 16% 100%); }
+  .bigbang i:last-child { width: 80px; height: 80px; background: var(--xp); transform: rotate(45deg); border-radius: 10px; }
+  .shadow { width: 200px; height: 34px; border-radius: 50%; background: rgba(0,0,0,.45); margin-top: 40px; }
+
+  /* 3. Party */
+  .pcard { position: absolute; left: 70px; right: 70px; height: 400px; border-radius: 26px; padding: 44px 50px; overflow: hidden; display: grid; gap: 14px; align-content: start; }
+  .pcard.radu { top: 560px; background: var(--radu); color: #fff; }
+  .pcard.leo { top: 1000px; background: var(--leo); color: var(--ink); }
+  .pcard .tag { font: 400 24px var(--pixel); opacity: .85; letter-spacing: 1px; }
+  .pcard h3 { margin: 0; font: 700 104px/1 var(--display); letter-spacing: -2px; }
+  .pcard .cls { font: 500 28px var(--mono); }
+  .stats { display: grid; gap: 14px; margin-top: 8px; width: 640px; }
+  .stat { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 18px; font: 700 24px var(--mono); }
+  .bar { height: 20px; border-radius: 4px; background: rgba(0,0,0,.2); overflow: hidden; }
+  .radu .bar { background: rgba(255,255,255,.22); }
+  .bar b { display: block; height: 100%; width: 0; background: currentColor; }
+  .pcard .diamond { position: absolute; right: -70px; top: -70px; width: 300px; height: 300px; border: 34px solid currentColor; transform: rotate(45deg); opacity: .14; }
+  .stamp { position: absolute; left: 50%; top: 1460px; font: 400 44px var(--pixel); color: var(--xp); border: 6px solid var(--xp); padding: 26px 34px; border-radius: 12px; background: rgba(20,17,28,.85); white-space: nowrap; }
+
+  /* 4. Skills */
+  .skill { position: absolute; left: 70px; right: 70px; height: 230px; background: var(--ink-2); border: 3px solid var(--ink-line); border-radius: 24px; display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 30px; padding: 0 44px; }
+  .skill .ic { width: 140px; height: 140px; border-radius: 28px; display: grid; place-items: center; font-size: 78px; }
+  .skill h3 { margin: 0; font: 700 64px/1.05 var(--display); }
+  .skill p { margin: 8px 0 0; font: 500 30px var(--mono); color: var(--muted); }
+  .skill .lvl { position: absolute; right: 30px; top: -26px; font: 400 22px var(--pixel); background: var(--xp); color: var(--ink); padding: 12px 16px; border-radius: 8px; }
+
+  /* 5. Conquistas */
+  .toast { position: absolute; left: 70px; right: 70px; top: 520px; display: grid; grid-template-columns: 150px 1fr; gap: 30px; align-items: center; background: var(--ink-2); border-radius: 22px; padding: 30px; border-left: 14px solid var(--xp); box-shadow: 0 30px 60px -20px rgba(0,0,0,.6); }
+  .toast .ic { width: 150px; height: 150px; border-radius: 22px; overflow: hidden; }
+  .toast .ic img { width: 100%; height: 100%; object-fit: cover; }
+  .toast small { display: block; font: 700 26px var(--mono); letter-spacing: .08em; color: var(--xp); margin-bottom: 16px; }
+  .toast b { display: block; font: 700 66px/1 var(--display); }
+  .toast span { display: block; font: 500 32px var(--body); color: #CBC6DB; margin-top: 10px; }
+  .phone { position: absolute; left: 50%; top: 790px; width: 470px; height: 1000px; margin-left: -235px; border-radius: 64px; background: #0B0910; padding: 16px; box-shadow: 0 50px 100px -30px rgba(0,0,0,.8), 0 0 0 3px #2E2942; }
+  .phone .scr { width: 100%; height: 100%; border-radius: 50px; overflow: hidden; position: relative; }
+  .phone img { width: 100%; display: block; }
+  .phone .notch { position: absolute; top: 34px; left: 50%; width: 130px; height: 36px; margin-left: -65px; background: #0B0910; border-radius: 20px; z-index: 2; }
+
+  /* 6. Chefe */
+  .boss { position: absolute; left: 50%; top: 820px; width: 480px; height: 480px; margin-left: -240px; display: grid; place-items: center; }
+  .boss .body { width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #FFE08A, var(--xp) 55%, #D99A12); display: grid; place-items: center; box-shadow: 0 0 120px rgba(255,201,74,.45); }
+  .boss .face { font: 400 84px var(--pixel); color: var(--ink); letter-spacing: 6px; }
+  .boss .label { position: absolute; bottom: -70px; font: 400 26px var(--pixel); white-space: nowrap; }
+  .hpwrap { position: absolute; left: 110px; right: 110px; top: 610px; display: grid; gap: 14px; }
+  .hpwrap .row { display: flex; justify-content: space-between; font: 400 24px var(--pixel); }
+  .hp { height: 46px; border: 5px solid var(--paper); border-radius: 10px; padding: 5px; background: #0E0B15; }
+  .hp b { display: block; height: 100%; border-radius: 4px; background: var(--hp); }
+  .hit { position: absolute; left: 50%; font: 700 88px var(--display); letter-spacing: -1px; white-space: nowrap; color: var(--paper); text-shadow: 0 6px 0 var(--ink); }
+  .dmg { position: absolute; font: 400 54px var(--pixel); color: var(--hp); text-shadow: 0 6px 0 var(--ink); }
+  .win { position: absolute; left: 50%; top: 1420px; font: 400 54px var(--pixel); color: var(--leo); white-space: nowrap; text-shadow: 0 8px 0 var(--ink); }
+
+  /* 7. Encerramento */
+  .ask { position: absolute; left: 70px; right: 70px; top: 330px; background: #0E0B15; border: 6px solid var(--paper); border-radius: 22px; box-shadow: 0 0 0 6px var(--ink), 0 0 0 12px var(--leo); padding: 50px; text-align: center; }
+  .ask p { margin: 0 0 40px; font: 400 44px/1.4 var(--pixel); }
+  .opts { display: flex; justify-content: center; gap: 40px; }
+  .opt { font: 400 38px var(--pixel); padding: 22px 34px; border-radius: 12px; border: 5px solid var(--ink-line); color: var(--muted); position: relative; }
+  .opt.on { border-color: var(--leo); color: var(--ink); background: var(--leo); }
+  .cursor { position: absolute; left: -54px; top: 50%; margin-top: -20px; width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; border-left: 30px solid var(--paper); }
+  .end { position: absolute; left: 0; right: 0; top: 820px; display: grid; justify-items: center; gap: 34px; text-align: center; }
+  .end h2 { margin: 0; font: 700 84px/1.05 var(--display); letter-spacing: -1.5px; }
+  .mail { display: inline-grid; gap: 10px; padding: 28px 40px; background: var(--ink-2); border: 3px solid var(--ink-line); border-bottom: 8px solid var(--xp); border-radius: 18px; }
+  .mail small { font: 400 20px var(--pixel); color: var(--xp); }
+  .mail b { font: 700 44px var(--display); }
+  .bio { font: 400 28px var(--pixel); color: var(--leo); }
+  #fade { position: absolute; inset: 0; background: #000; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="bg" id="bg"></div>
+
+  <!-- 1. PRESS START -->
+  <div class="scene" id="s1">
+    <div class="abs press" id="press" style="left:0;right:0;top:1120px;text-align:center">PRESS START</div>
+    <div class="abs" id="logo1" style="left:0;right:0;top:640px;display:grid;justify-items:center;gap:26px">
+      <svg viewBox="0 0 64 64" width="380" height="380" style="overflow:visible">
+        <polyline id="l1" points="22,17 9,32 22,47" fill="none" stroke="#1FCB7E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline id="r1" points="42,17 55,32 42,47" fill="none" stroke="#A984FF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <g id="b1" fill="#F7F6FB" stroke="#F7F6FB" stroke-width="2" stroke-linejoin="round"><path d="M28.5 12 H35.5 L34.3 36 H29.7 Z"/><path d="M32 41 L36.5 45.5 L32 50 L27.5 45.5 Z"/></g>
+      </svg>
+      <div class="wordmark" id="wm1">Side<span>Quest</span></div>
+      <div class="studio" id="st1">STUDIO</div>
+    </div>
+  </div>
+
+  <!-- 2. Diálogo -->
+  <div class="scene" id="s2">
+    <div class="npc" id="npc"><div class="bigbang" id="bang2"><i></i><i></i></div><div class="shadow" id="shd2"></div></div>
+    <div class="dialog" id="dlg">
+      <span class="who">NOVA QUEST</span>
+      <p id="t1"></p>
+      <p id="t2"></p>
+      <i class="next" id="nxt"></i>
+    </div>
+  </div>
+
+  <!-- 3. Party -->
+  <div class="scene" id="s3">
+    <div class="title" id="tt3"><small>SELECIONE</small><h2>Escolha sua <span class="gold">party</span></h2></div>
+    <div class="pcard radu" id="pr">
+      <i class="diamond"></i>
+      <span class="tag">PLAYER 1</span>
+      <h3>Raduchiu</h3>
+      <span class="cls">Classe: Desenvolvedor</span>
+      <div class="stats">
+        <div class="stat"><span>CÓDIGO</span><div class="bar"><b data-w="92"></b></div></div>
+        <div class="stat"><span>JOGOS</span><div class="bar"><b data-w="94"></b></div></div>
+        <div class="stat"><span>ANIME</span><div class="bar"><b data-w="95"></b></div></div>
+      </div>
+    </div>
+    <div class="pcard leo" id="pl">
+      <i class="diamond"></i>
+      <span class="tag">PLAYER 2</span>
+      <h3>Leo</h3>
+      <span class="cls">Classe: Desenvolvedor</span>
+      <div class="stats">
+        <div class="stat"><span>CÓDIGO</span><div class="bar"><b data-w="92"></b></div></div>
+        <div class="stat"><span>JOGOS</span><div class="bar"><b data-w="96"></b></div></div>
+        <div class="stat"><span>ANIME</span><div class="bar"><b data-w="88"></b></div></div>
+      </div>
+    </div>
+    <div class="stamp" id="stamp">PARTY COMPLETA!</div>
+  </div>
+
+  <!-- 4. Skills -->
+  <div class="scene" id="s4">
+    <div class="title" id="tt4"><small>ÁRVORE DE HABILIDADES</small><h2>Skills <span class="green">desbloqueadas</span></h2></div>
+    <div class="skill" id="k1" style="top:620px"><span class="ic" style="background:rgba(31,203,126,.16)">📱</span><div><h3>Apps mobile</h3><p>iOS e Android</p></div><span class="lvl">LEVEL UP!</span></div>
+    <div class="skill" id="k2" style="top:900px"><span class="ic" style="background:rgba(169,132,255,.18)">💻</span><div><h3>Sites e sistemas</h3><p>Next.js · React</p></div><span class="lvl">LEVEL UP!</span></div>
+    <div class="skill" id="k3" style="top:1180px"><span class="ic" style="background:rgba(255,201,74,.16)">⚙️</span><div><h3>Backend</h3><p>Login · banco · pagamentos</p></div><span class="lvl">LEVEL UP!</span></div>
+  </div>
+
+  <!-- 5. Conquistas -->
+  <div class="scene" id="s5">
+    <div class="title" id="tt5" style="top:290px"><small>NOSSO PORTFÓLIO</small><h2>Quests <span class="gold">concluídas</span></h2></div>
+    <div class="toast" id="a1"><span class="ic" style="background:#A2D67C"><img src="shots/petmatch-pixel.png" alt=""></span><div><small>🏆 CONQUISTA DESBLOQUEADA</small><b>MyPetMatch</b><span>Adoção de pets sem burocracia</span></div></div>
+    <div class="toast" id="a2"><span class="ic" style="background:#2B1B17"><img src="shots/levelfit-brasa.png" alt=""></span><div><small>🏆 CONQUISTA DESBLOQUEADA</small><b>Level Fit</b><span>Hábitos saudáveis viram uma luta</span></div></div>
+    <div class="phone" id="ph1"><i class="notch"></i><div class="scr"><img src="shots/m-mypetmatch.png" alt=""></div></div>
+    <div class="phone" id="ph2"><i class="notch"></i><div class="scr"><img src="shots/m-levelfit.png" alt=""></div></div>
+  </div>
+
+  <!-- 6. Chefe final -->
+  <div class="scene" id="s6">
+    <div class="title" id="tt6"><small>CUIDADO</small><h2>Chefe final</h2></div>
+    <div class="hpwrap" id="hpw"><div class="row"><span>SEU PROJETO</span><span id="hpn">100%</span></div><div class="hp"><b id="hpb" style="width:100%"></b></div></div>
+    <div class="boss" id="boss"><div class="body" id="bossb"><span class="face" id="face">&gt;_&lt;</span></div><span class="label">💡 A SUA IDEIA</span></div>
+    <div class="hit" id="h0" style="top:1470px">BRIEFING!</div>
+    <div class="hit" id="h1" style="top:1470px">PROTÓTIPO!</div>
+    <div class="hit" id="h2" style="top:1470px">CÓDIGO!</div>
+    <div class="hit" id="h3" style="top:1470px">LANÇAMENTO!</div>
+    <div class="dmg" id="d0">-25</div><div class="dmg" id="d1">-25</div><div class="dmg" id="d2">-25</div><div class="dmg" id="d3">-25</div>
+    <div class="win" id="win">QUEST COMPLETA!</div>
+  </div>
+
+  <!-- 7. Encerramento -->
+  <div class="scene" id="s7">
+    <div class="ask" id="ask">
+      <p>Aceitar a quest?</p>
+      <div class="opts"><span class="opt" id="o1">SIM<i class="cursor" id="cur"></i></span><span class="opt" id="o2">CLARO</span></div>
+    </div>
+    <div class="end" id="end">
+      <svg viewBox="0 0 64 64" width="200" height="200" style="overflow:visible">
+        <polyline points="22,17 9,32 22,47" fill="none" stroke="#1FCB7E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="42,17 55,32 42,47" fill="none" stroke="#A984FF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <g id="b7" fill="#F7F6FB" stroke="#F7F6FB" stroke-width="2" stroke-linejoin="round"><path d="M28.5 12 H35.5 L34.3 36 H29.7 Z"/><path d="M32 41 L36.5 45.5 L32 50 L27.5 45.5 Z"/></g>
+      </svg>
+      <h2>Side<span class="purple">Quest</span> Studio</h2>
+      <div class="mail" id="mail"><small>CONTE SUA IDEIA</small><b>contatosidequeststudio@gmail.com</b></div>
+      <div class="bio" id="bio">▲ LINK NA BIO ▲</div>
+    </div>
+  </div>
+
+  <div id="flash"></div>
+  <div id="fade"></div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const outCubic = (x) => 1 - Math.pow(1 - x, 3);
+const outBack = (x) => { const c1 = 2.2, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const outBounce = (x) => { const n = 7.5625, d = 2.75; if (x < 1 / d) return n * x * x; if (x < 2 / d) return n * (x -= 1.5 / d) * x + .75; if (x < 2.5 / d) return n * (x -= 2.25 / d) * x + .9375; return n * (x -= 2.625 / d) * x + .984375; };
+const lerp = (a, b, x) => a + (b - a) * x;
+const vis = (t, a, b, f = 0.25) => Math.min(seg(t, a, a + f), 1 - seg(t, b - f, b));
+const set = (el, o, tf) => { el.style.opacity = o; if (tf !== undefined) el.style.transform = tf; };
+/** Pulinho de "pop": cresce além do tamanho e volta. */
+const pop = (t, a, d = 0.35) => { const p = seg(t, a, a + d); return { o: p > 0 ? 1 : 0, s: p > 0 ? lerp(0.4, 1, outBack(p)) : 0.4 }; };
+/** Tremida curta depois de um golpe. */
+const shake = (t, hits, amp = 18) => { let x = 0; for (const h of hits) { const p = seg(t, h, h + 0.25); if (p > 0 && p < 1) x += Math.sin(p * 40) * amp * (1 - p); } return x; };
+const type = (el, text, t, a, b) => { el.textContent = text.slice(0, Math.round(text.length * seg(t, a, b))); };
+
+const L1 = "Você tem uma ideia de app...";
+const L2 = "...e precisa de alguém pra tirar do papel?";
+const HITS = [22.6, 23.2, 23.8, 24.4];
+
+function render(t) {
+  $("bg").style.transform = `translate(${(t * 18) % 44}px, ${(t * 18) % 44}px)`;
+
+  // 1. PRESS START (0 a 2.9)
+  { set($("s1"), 1 - seg(t, 2.65, 2.9));
+    const blink = t < 1.4 ? (Math.floor(t / 0.35) % 2 === 0 ? 1 : 0.15) : 0;
+    set($("press"), blink);
+    $("flash").style.opacity = Math.max(1 - seg(t, 1.4, 1.65), 0) * (t >= 1.4 ? 0.9 : 0) + Math.max(0, 1 - seg(t, 21.5, 21.75)) * (t >= 21.5 ? 0.5 : 0);
+    const l = outCubic(seg(t, 1.45, 1.8)), r = outCubic(seg(t, 1.55, 1.9));
+    set($("l1"), l, `translateX(${lerp(-60, 0, l)}px)`); set($("r1"), r, `translateX(${lerp(60, 0, r)}px)`);
+    const b = seg(t, 1.6, 2.05); set($("b1"), b > 0 ? 1 : 0, `translateY(${lerp(-90, 0, outBounce(b))}px)`);
+    const w = pop(t, 2.0); set($("wm1"), w.o, `scale(${w.s})`);
+    set($("st1"), outCubic(seg(t, 2.25, 2.55))); }
+
+  // 2. Diálogo (2.9 a 7.2)
+  { set($("s2"), vis(t, 2.9, 7.2));
+    const d = outCubic(seg(t, 2.9, 3.2)); $("dlg").style.transform = `translateY(${lerp(500, 0, d)}px)`;
+    type($("t1"), L1, t, 3.15, 4.4); type($("t2"), L2, t, 4.8, 6.3);
+    $("nxt").style.opacity = t > 6.35 && Math.floor(t / 0.3) % 2 === 0 ? 1 : 0;
+    const nb = pop(t, 3.0, 0.45); const hover = Math.sin(t * 5) * 18;
+    set($("bang2"), nb.o, `translateY(${hover}px) scale(${nb.s})`);
+    $("shd2").style.transform = `scale(${1 - hover / 120})`; $("shd2").style.opacity = nb.o; }
+
+  // 3. Party (7.2 a 11.6)
+  { set($("s3"), vis(t, 7.2, 11.6));
+    const tt = outCubic(seg(t, 7.25, 7.6)); set($("tt3"), tt, `translateY(${lerp(-40, 0, tt)}px)`);
+    const a = outBack(seg(t, 7.6, 8.05)), b = outBack(seg(t, 8.0, 8.45));
+    $("pr").style.transform = `translateX(${lerp(-1100, 0, a)}px)`; $("pl").style.transform = `translateX(${lerp(1100, 0, b)}px)`;
+    document.querySelectorAll("#s3 .bar b").forEach((el, i) => { const p = outCubic(seg(t, 8.5 + i * 0.12, 9.4 + i * 0.12)); el.style.width = el.dataset.w * p + "%"; });
+    const s = seg(t, 10.0, 10.3); $("stamp").style.opacity = s > 0 ? 1 : 0;
+    $("stamp").style.transform = `translateX(-50%) rotate(-6deg) scale(${lerp(2.6, 1, outCubic(s))})`; }
+
+  // 4. Skills (11.6 a 15.6)
+  { set($("s4"), vis(t, 11.6, 15.6));
+    const tt = outCubic(seg(t, 11.65, 12.0)); set($("tt4"), tt, `translateY(${lerp(-40, 0, tt)}px)`);
+    [12.2, 13.0, 13.8].forEach((a, i) => {
+      const p = pop(t, a, 0.4); set($("k" + (i + 1)), p.o, `scale(${p.s})`);
+      const lv = $("k" + (i + 1)).querySelector(".lvl"); const q = seg(t, a + 0.15, a + 0.45);
+      lv.style.opacity = q > 0 ? 1 : 0; lv.style.transform = `translateY(${lerp(30, 0, outBack(q))}px)`;
+    }); }
+
+  // 5. Conquistas (15.6 a 21.6)
+  { set($("s5"), vis(t, 15.6, 21.6));
+    const tt = outCubic(seg(t, 15.65, 16.0)); set($("tt5"), tt, `translateY(${lerp(-40, 0, tt)}px)`);
+    const a1 = outBack(seg(t, 16.0, 16.4)), x1 = outCubic(seg(t, 18.6, 18.9));
+    set($("a1"), 1 - x1, `translateY(${lerp(-260, 0, a1) - x1 * 60}px)`);
+    const a2 = outBack(seg(t, 18.8, 19.2));
+    set($("a2"), seg(t, 18.8, 18.85), `translateY(${lerp(-260, 0, a2)}px)`);
+    const p1 = outCubic(seg(t, 16.3, 16.9)), p1x = outCubic(seg(t, 18.5, 18.9));
+    $("ph1").style.transform = `translate(${lerp(0, -1100, p1x)}px, ${lerp(1100, 0, p1)}px) rotate(${lerp(8, -2, p1)}deg)`;
+    const p2 = outCubic(seg(t, 18.7, 19.2));
+    $("ph2").style.transform = `translateX(${lerp(1100, 0, p2)}px) rotate(${lerp(-8, 2, p2)}deg)`; }
+
+  // 6. Chefe final (21.6 a 25.8)
+  { set($("s6"), vis(t, 21.55, 25.8, 0.2));
+    const tt = pop(t, 21.65, 0.35); set($("tt6"), tt.o, `scale(${tt.s})`);
+    set($("hpw"), outCubic(seg(t, 21.8, 22.1)));
+    let hp = 100; HITS.forEach((h, i) => { hp -= 25 * outCubic(seg(t, h, h + 0.3)); });
+    $("hpb").style.width = hp + "%"; $("hpn").textContent = Math.round(hp) + "%";
+    const sx = shake(t, HITS), dead = seg(t, 24.7, 25.1);
+    const bp = pop(t, 21.9, 0.45);
+    set($("boss"), bp.o * (1 - dead * 0.6), `translateX(${sx}px) scale(${bp.s * lerp(1, 0.55, dead)}) rotate(${dead * 25}deg)`);
+    $("face").textContent = t >= 24.7 ? "x_x" : (HITS.some(h => t >= h && t < h + 0.25) ? "O_O" : ">_<");
+    $("bossb").style.filter = HITS.some(h => t >= h && t < h + 0.08) ? "brightness(2.2)" : "none";
+    HITS.forEach((h, i) => {
+      const p = seg(t, h - 0.05, h + 0.2), gone = seg(t, h + 0.45, h + 0.6);
+      set($("h" + i), (p > 0 ? 1 : 0) * (1 - gone), `translateX(-50%) scale(${lerp(1.8, 1, outCubic(p))})`);
+      const d = seg(t, h, h + 0.7); const dx = [-260, 230, -230, 250][i];
+      set($("d" + i), d > 0 ? 1 - seg(t, h + 0.45, h + 0.7) : 0, `translate(${540 + dx - 60}px, ${lerp(960, 820, outCubic(d))}px)`);
+    });
+    const w = pop(t, 24.95, 0.4); set($("win"), w.o, `translateX(-50%) scale(${w.s})`); }
+
+  // 7. Encerramento (25.8 a 30)
+  { set($("s7"), seg(t, 25.8, 26.05));
+    const a = outBack(seg(t, 25.85, 26.3)); set($("ask"), seg(t, 25.85, 25.95), `scale(${lerp(0.6, 1, a)})`);
+    const onYes = t >= 26.6; $("o1").classList.toggle("on", onYes);
+    $("o2").classList.toggle("on", t >= 26.95);
+    $("cur").style.transform = `translateX(${t < 26.95 ? 0 : 255}px)`;
+    $("cur").style.opacity = t >= 26.2 ? 1 : 0;
+    $("o2").style.borderColor = t >= 26.95 ? "" : "";
+    const e = outCubic(seg(t, 27.25, 27.6)); set($("end"), e, `translateY(${lerp(60, 0, e)}px)`);
+    const b = seg(t, 27.35, 27.8); $("b7").style.transform = `translateY(${lerp(-80, 0, outBounce(b))}px)`;
+    const m = pop(t, 27.9, 0.4); set($("mail"), m.o, `scale(${m.s})`);
+    set($("bio"), t > 28.4 ? (Math.floor(t / 0.35) % 2 === 0 ? 1 : 0.35) : 0); }
+
+  $("fade").style.opacity = seg(t, 29.4, 30);
+}
+window.render = render;
+render(0);
+</script>
+</body>
+</html>
