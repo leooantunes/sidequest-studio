@@ -6,7 +6,16 @@ export function StoreButtons({ align = 'start' }: { align?: 'start' | 'center' }
     { label: 'App Store', icon: '🍎', url: site.appStoreUrl, cls: 'btn' },
     { label: 'Google Play', icon: '▶', url: site.playStoreUrl, cls: 'btn alt' },
   ];
-  const anyMissing = stores.some((s) => !s.url);
+  const ios = Boolean(site.appStoreUrl);
+  const android = Boolean(site.playStoreUrl);
+  const note =
+    ios && android
+      ? 'Disponível para iPhone e Android.'
+      : ios
+        ? 'Disponível para iPhone. Em breve no Android.'
+        : android
+          ? 'Disponível para Android. Em breve no iPhone.'
+          : 'Em breve para iPhone e Android.';
   return (
     <div className={`stores stores-${align}`}>
       <div className="actions">
@@ -22,7 +31,7 @@ export function StoreButtons({ align = 'start' }: { align?: 'start' | 'center' }
           ),
         )}
       </div>
-      <p className="soon">{anyMissing ? 'Em breve para iPhone e Android.' : 'Disponível para iPhone e Android.'}</p>
+      <p className="soon">{note}</p>
     </div>
   );
 }

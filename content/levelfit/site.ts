@@ -10,6 +10,6 @@ export const site = {
   controllerName: studio.legalName as string | null,
   supportEmail: studio.privacyEmail as string | null,
   /** Links das lojas. Sem eles, os botões aparecem como "em breve". */
-  appStoreUrl: null as string | null,
+  appStoreUrl: "https://apps.apple.com/br/app/level-fit-duelo-de-h%C3%A1bitos/id6837797590" as string | null,
   playStoreUrl: null as string | null,
 };
