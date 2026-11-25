@@ -57,3 +57,7 @@ Em `brand/logo/png/`, com fundo transparente (exceto o ícone quadrado):
 | `simbolo.png` / `simbolo-escuro.png` | Só o símbolo `<!>` (1024×1024) |
 | `icone-app.png` | Ícone com cantos arredondados (1024×1024): avatar, Discord, GitHub |
 | `icone-app-quadrado.png` | Ícone sem transparência (1024×1024), para lojas e redes que arredondam sozinhas |
+
+## Vídeo promocional
+
+`brand/video/sidequest-promo.mp4`: 34 s, 1920×1080, com trilha 8-bit original. As fontes para editar e gerar de novo estão em `brand/video/fonte/`.
