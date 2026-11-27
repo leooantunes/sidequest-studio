@@ -10,9 +10,11 @@ type Props = {
   sections: LegalSection[];
   back?: { href: string; label: string };
   tone?: string;
+  /** Data da última atualização. Sem ela, vale a data geral de lib/site.ts. */
+  updated?: string;
 };
 
-export function LegalPage({ eyebrow, title, intro, sections, back, tone }: Props) {
+export function LegalPage({ eyebrow, title, intro, sections, back, tone, updated }: Props) {
   return (
     <article className={`legal ${tone ? `legal--${tone}` : ""}`}>
       <header className="legal__head">
@@ -24,7 +26,7 @@ export function LegalPage({ eyebrow, title, intro, sections, back, tone }: Props
           )}
           {!back && <p className="eyebrow">{eyebrow}</p>}
           <h1>{title}</h1>
-          <p className="legal__updated">Última atualização: {site.policyUpdated}</p>
+          <p className="legal__updated">Última atualização: {updated ?? site.policyUpdated}</p>
         </div>
       </header>
       <div className="wrap legal__layout">

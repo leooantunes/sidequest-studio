@@ -30,9 +30,11 @@ Páginas: `/` (início) e `/apps/mypetmatch`, `/apps/levelfit` (cases).
 | `/apps/levelfit/privacidade` | App Store Connect e Google Play: URL da política de privacidade do Level Fit |
 | `/apps/mypetmatch/excluir-conta` | Google Play → Segurança dos dados: URL para excluir a conta |
 | `/apps/levelfit/excluir-conta` | Google Play → Segurança dos dados: URL para excluir a conta |
+| `/apps/trocaitcg/privacidade` | App Store Connect e Google Play: URL da política de privacidade do TrocaíTcg |
+| `/apps/trocaitcg/excluir-conta` | Google Play → Segurança dos dados: URL para excluir a conta |
 | `/privacidade` | Política do próprio site, com links para as dos apps |
 
-Os textos ficam em `components/legal/policies.tsx`. Antes de publicar, confira `legalName` e `cnpj` em `lib/site.ts`, e atualize `policyUpdated` sempre que mudar o texto.
+Os textos ficam em `components/legal/policies.tsx`. Para publicar a política de um app novo, adicione-o em `POLICY_APPS` (não precisa estar na vitrine do site); cada app pode ter a própria data em `updated`. Antes de publicar, confira `legalName` e `cnpj` em `lib/site.ts`, e atualize `policyUpdated` sempre que mudar o texto.
 
 ## Sites dos produtos
 

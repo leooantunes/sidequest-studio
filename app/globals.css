@@ -364,3 +364,5 @@ img { max-width: 100%; }
 /* ---------- 404 ---------- */
 .notfound { min-height: 100vh; display: grid; align-items: center; }
 .notfound__inner { display: grid; gap: 24px; padding-block: 64px; }
+.legal--trocaitcg .legal__head { background: #121418; color: #F2F4F7; border-bottom: 3px solid #5EE6A8; }
+.legal--trocaitcg .legal__head .eyebrow, .legal--trocaitcg .legal__head .case__back { color: #5EE6A8; }

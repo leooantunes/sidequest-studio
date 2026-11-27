@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ControllerBlock, LegalPage, PrivacyMail, RightsBlock } from "@/components/legal/LegalPage";
-import { apps } from "@/lib/apps";
+import { POLICY_APPS } from "@/components/legal/policies";
 
 export const metadata: Metadata = {
   title: "Privacidade",
@@ -20,7 +20,7 @@ export default function SitePrivacyPage() {
             diferentes. Escolha o app abaixo. Mais adiante está a política deste site.
           </p>
           <div className="legal__apps">
-            {apps.map((a) => (
+            {POLICY_APPS.map((a) => (
               <div key={a.slug} className="legal__app">
                 <b>{a.name}</b>
                 <Link href={`/apps/${a.slug}/privacidade`}>Política de Privacidade</Link>

@@ -569,11 +569,302 @@ const levelfitDeletion: Policy = {
   ],
 };
 
-const policies = {
-  mypetmatch: { privacy: petmatchPrivacy, deletion: petmatchDeletion },
-  levelfit: { privacy: levelfitPrivacy, deletion: levelfitDeletion },
-} as const;
+/* ------------------------------------------------------------------ */
+/* TrocaíTcg                                                           */
+/* ------------------------------------------------------------------ */
+
+const trocaitcgPrivacy: Policy = {
+  intro: (
+    <>
+      <p>
+        O TrocaíTcg ajuda colecionadores de Pokémon TCG da mesma cidade ou loja a trocar cartas. Você cadastra as cartas
+        que tem repetidas e as que procura, o app cruza as listas e mostra quem tem o que você quer. Esta política
+        explica quais dados pessoais o app coleta, por que coleta, com quem compartilha, por quanto tempo guarda e como
+        você controla esses dados. Ela vale para o app no iPhone (App Store) e no Android (Google Play).
+      </p>
+      <p>
+        O TrocaíTcg é um app de fãs, sem vínculo com Nintendo, Creatures, GAME FREAK ou The Pokémon Company.
+      </p>
+    </>
+  ),
+  sections: [
+    { id: "responsavel", title: "Quem é o responsável", content: <ControllerBlock appName="TrocaíTcg" /> },
+    {
+      id: "dados",
+      title: "Dados que coletamos",
+      content: (
+        <>
+          <LegalTable
+            head={["Dado", "Quando é coletado", "Obrigatório?"]}
+            rows={[
+              ["E-mail e senha", "Ao criar a conta. A senha fica criptografada no Supabase e nós não temos acesso a ela.", "Sim"],
+              ["Nome de exibição e cidade", "No cadastro, para mostrar você a colecionadores perto de você.", "Sim"],
+              ["Bairro e loja onde você joga", "No cadastro, se você quiser informar.", "Não"],
+              ["Suas listas de cartas", "Cartas que você tem repetidas e cartas que procura, com quantidade, estado e idioma.", "Sim, para usar o app"],
+              ["Trocas e mensagens", "Propostas de troca, cartas envolvidas, status, local de encontro combinado e mensagens do chat.", "Só se você trocar"],
+              ["Token de notificação", "Se você permitir notificações, para avisar sobre mensagens e propostas.", "Não"],
+              ["Denúncias e bloqueios", "Quando você denuncia ou bloqueia alguém: motivo e detalhes que você escrever.", "Não"],
+            ]}
+          />
+          <p>
+            O app <b>não usa a localização do celular</b>: a cidade, o bairro e a loja são digitados por você. O app também
+            não coleta fotos, contatos, dados de pagamento, histórico de navegação nem identificadores de publicidade.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "finalidades",
+      title: "Para que usamos e com qual base legal",
+      content: (
+        <LegalTable
+          head={["Finalidade", "Base legal (LGPD, art. 7º)"]}
+          rows={[
+            ["Criar e manter sua conta e permitir o login", "Execução de contrato (inciso V)"],
+            ["Cruzar suas listas com as de outros colecionadores da mesma cidade ou loja", "Execução de contrato (inciso V)"],
+            ["Criar propostas de troca e o chat entre os dois participantes", "Execução de contrato (inciso V)"],
+            ["Enviar notificações de mensagens e propostas", "Consentimento (inciso I), dado pela permissão do celular"],
+            ["Analisar denúncias, aplicar bloqueios e limitar propostas para evitar spam", "Legítimo interesse (inciso IX)"],
+            ["Guardar registros exigidos por lei e responder a autoridades", "Cumprimento de obrigação legal (inciso II)"],
+          ]}
+        />
+      ),
+    },
+    {
+      id: "visibilidade",
+      title: "O que outros usuários veem",
+      content: (
+        <>
+          <p>
+            Para o cruzamento funcionar, usuários logados podem ver <b>seu nome de exibição, sua cidade, seu bairro e sua
+            loja</b> (se informados) e <b>suas listas de cartas</b>.
+          </p>
+          <p>
+            Propostas, cartas de uma troca, local de encontro e mensagens do chat só aparecem para as duas pessoas da troca.
+            Seu e-mail não é mostrado a ninguém. Quem você bloqueia deixa de ver você nos matches e não pode mais trocar
+            mensagens com você.
+          </p>
+          <p>
+            Trocas presenciais são combinadas entre os usuários. Prefira lugares públicos, como a loja onde vocês jogam, e
+            não compartilhe no chat dados que você não quer tornar conhecidos.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "compartilhamento",
+      title: "Com quem compartilhamos",
+      content: (
+        <>
+          <p>Não vendemos seus dados. Só compartilhamos com os serviços abaixo, para o app funcionar:</p>
+          <LegalTable
+            head={["Serviço", "O que recebe", "Para quê"]}
+            rows={[
+              ["Supabase", "Conta, perfil, listas, trocas, mensagens, denúncias e bloqueios", "Login, banco de dados e chat em tempo real"],
+              ["Expo (650 Industries, Inc.)", "Token de notificação, nome de quem enviou e início da mensagem (até 180 caracteres)", "Entrega das notificações push"],
+              ["Apple e Google", "O conteúdo da notificação, repassado pela Expo", "Mostrar a notificação no seu celular"],
+              ["TCGdex", "Dados técnicos do acesso, como o endereço IP, quando o app carrega a imagem de uma carta", "Imagens das cartas do catálogo"],
+            ]}
+          />
+          <p>
+            Esses fornecedores tratam os dados apenas para prestar o serviço ao TrocaíTcg, com proteção equivalente à desta
+            política. Também podemos compartilhar dados quando a lei ou uma ordem judicial exigir.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "transferencia",
+      title: "Transferência internacional",
+      content: (
+        <p>
+          Os servidores do Supabase, da Expo e do TCGdex podem ficar fora do Brasil. Essas transferências seguem o art. 33
+          da LGPD, com cláusulas contratuais de proteção de dados oferecidas por esses fornecedores.
+        </p>
+      ),
+    },
+    {
+      id: "permissoes",
+      title: "Permissões do celular",
+      content: (
+        <p>
+          O TrocaíTcg só pede uma permissão: <b>notificações</b>, para avisar sobre mensagens e propostas de troca. Você
+          pode negar ou desligar nos ajustes do celular e continuar usando o app. Quando você sai da conta, o aparelho
+          deixa de receber as notificações dela.
+        </p>
+      ),
+    },
+    {
+      id: "publicidade",
+      title: "Publicidade e rastreamento",
+      content: (
+        <p>
+          O TrocaíTcg não mostra anúncios publicitários, não usa ferramentas de análise de terceiros e não rastreia você
+          em outros apps ou sites.
+        </p>
+      ),
+    },
+    {
+      id: "retencao",
+      title: "Por quanto tempo guardamos",
+      content: (
+        <ul>
+          <li>Os dados da conta, do perfil e das listas ficam guardados enquanto sua conta existir.</li>
+          <li>Quando você remove uma carta da lista, ela é apagada.</li>
+          <li>
+            Quando você exclui a conta, apagamos o login, o perfil, as listas, os bloqueios, as denúncias feitas por você
+            ou contra você, os tokens de notificação e todas as trocas de que você participou, com os itens e as mensagens.
+          </li>
+        </ul>
+      ),
+    },
+    {
+      id: "seguranca",
+      title: "Segurança",
+      content: (
+        <p>
+          Os dados trafegam com criptografia (HTTPS). No banco de dados, regras de acesso por linha garantem que trocas e
+          mensagens só sejam lidas pelos dois participantes, e o token de notificação não pode ser lido por nenhum usuário.
+          Para evitar spam, cada conta pode fazer até 20 propostas de troca a cada 24 horas. Nenhum sistema é totalmente
+          imune a falhas. Se acontecer um incidente que possa trazer risco a você, avisaremos você e a ANPD.
+        </p>
+      ),
+    },
+    {
+      id: "denuncias",
+      title: "Denúncias e bloqueios",
+      content: (
+        <p>
+          No perfil de um match ou numa conversa, toque em <b>Bloquear ou denunciar</b>. Denunciar também bloqueia a pessoa
+          na hora. As denúncias vão para a nossa equipe, que analisa cada caso e pode remover contas que desrespeitem
+          outros usuários.
+        </p>
+      ),
+    },
+    {
+      id: "direitos",
+      title: "Seus direitos",
+      content: <RightsBlock />,
+    },
+    {
+      id: "exclusao",
+      title: "Como excluir sua conta",
+      content: (
+        <>
+          <p>
+            No app, abra a aba <b>Perfil</b>, toque em <b>Excluir conta</b> e confirme. A exclusão é imediata e não pode ser
+            desfeita.
+          </p>
+          <p>
+            Se você não tem mais o app instalado, peça a exclusão pela página{" "}
+            <Link href="/apps/trocaitcg/excluir-conta">Excluir conta do TrocaíTcg</Link>.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "criancas",
+      title: "Crianças e adolescentes",
+      content: (
+        <p>
+          O TrocaíTcg não é destinado a menores de 13 anos. Como as trocas podem envolver encontros presenciais, quem tem
+          entre 13 e 17 anos deve usar o app e combinar encontros com o acompanhamento de um responsável. Se soubermos que
+          uma conta pertence a uma criança com menos de 13 anos, ela será excluída.
+        </p>
+      ),
+    },
+    {
+      id: "mudancas",
+      title: "Mudanças nesta política",
+      content: (
+        <p>
+          Quando esta política mudar, atualizamos a data no topo da página. Se a mudança for relevante, avisamos também
+          dentro do app.
+        </p>
+      ),
+    },
+    {
+      id: "contato",
+      title: "Contato",
+      content: (
+        <p>
+          Dúvidas, pedidos sobre seus dados ou denúncias: <PrivacyMail subject="TrocaíTcg — privacidade" />.
+        </p>
+      ),
+    },
+  ],
+};
+
+const trocaitcgDeletion: Policy = {
+  intro: (
+    <p>
+      Esta página explica como excluir sua conta do <b>TrocaíTcg</b>, app da SideQuest Studio, e o que acontece com seus
+      dados.
+    </p>
+  ),
+  sections: [
+    {
+      id: "no-app",
+      title: "Pelo app",
+      content: (
+        <ol>
+          <li>Abra o TrocaíTcg e entre na sua conta.</li>
+          <li>Toque na aba <b>Perfil</b>.</li>
+          <li>Toque em <b>Excluir conta</b> e confirme.</li>
+        </ol>
+      ),
+    },
+    {
+      id: "por-email",
+      title: "Sem o app instalado",
+      content: (
+        <>
+          <p>
+            Envie um e-mail para <PrivacyMail subject="Excluir conta — TrocaíTcg" /> com o assunto{" "}
+            <b>Excluir conta — TrocaíTcg</b>, a partir do e-mail cadastrado na sua conta.
+          </p>
+          <p>Podemos pedir uma confirmação para ter certeza de que o pedido é seu. A conta é excluída em até 15 dias.</p>
+        </>
+      ),
+    },
+    {
+      id: "apagado",
+      title: "O que é apagado",
+      content: (
+        <ul>
+          <li>Conta de login (e-mail e senha).</li>
+          <li>Perfil: nome de exibição, cidade, bairro e loja.</li>
+          <li>Suas listas de cartas repetidas e procuradas.</li>
+          <li>
+            Todas as trocas de que você participou, com as cartas, o local de encontro e as mensagens. Elas somem também
+            para a outra pessoa da troca.
+          </li>
+          <li>Bloqueios, denúncias feitas por você ou contra você e os tokens de notificação dos seus aparelhos.</li>
+        </ul>
+      ),
+    },
+    {
+      id: "mantido",
+      title: "O que pode ser mantido",
+      content: (
+        <p>
+          Nada fica ligado à sua conta depois da exclusão. Só guardamos algum dado se a lei ou uma ordem judicial exigir,
+          pelo prazo que ela determinar.
+        </p>
+      ),
+    },
+  ],
+};
+
+type PolicyApp = { slug: string; name: string; privacy: Policy; deletion: Policy; /** Sem data própria, vale a de lib/site.ts. */ updated?: string };
+
+/** Apps com política de privacidade publicada. A vitrine do site (lib/apps.ts) pode ter menos apps que esta lista. */
+export const POLICY_APPS: PolicyApp[] = [
+  { slug: "mypetmatch", name: "MyPetMatch", privacy: petmatchPrivacy, deletion: petmatchDeletion },
+  { slug: "levelfit", name: "Level Fit", privacy: levelfitPrivacy, deletion: levelfitDeletion },
+  { slug: "trocaitcg", name: "TrocaíTcg", privacy: trocaitcgPrivacy, deletion: trocaitcgDeletion, updated: "27 de novembro de 2026" },
+];
 
 export function getPolicies(slug: string) {
-  return slug in policies ? policies[slug as keyof typeof policies] : undefined;
+  return POLICY_APPS.find((a) => a.slug === slug);
 }
